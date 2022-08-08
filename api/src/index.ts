@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv'
 import {Server} from 'socket.io'
 import precheck from './utils/precheck'
 import authRouter from './routes/auth'
+import friendRouter from './routes/friend'
 
 interface NotificationProps {
     sender: string
@@ -26,9 +27,10 @@ const app = Express()
 const server = http.createServer(app);
 
 //middleware settings
+app.use(Express.json())
 app.use(cors())
 app.use("/auth", authRouter)
-
+app.use("/friend", friendRouter)
 //socket.io
 export const socket = new Server(server, {
     cors : {
@@ -44,6 +46,10 @@ app.get('/', (req, res) => res.send('Hello World!'));
 //Io server
 // IS - Internal Socket which is basically socket 
 const connectedUser:connectedUser[] = [];
+export const getUserConnectionID = (userID:string) => {
+    return connectedUser.find(user => user.userId === userID)?.connectedID;
+}
+
 socket.on("connection", (IS) => {
 
 
