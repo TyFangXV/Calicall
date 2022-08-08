@@ -1,0 +1,50 @@
+.bs_chat{
+  width: 550px;
+  height: 500px;
+}
+
+.layout_clip{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 2% 0 2%;
+  justify-content: space-around;
+  margin-bottom: 5%;
+}
+
+.nav{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100%;
+  height: 60px;
+  background-color: white;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.logo{
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 2%;
+}
+
+.joinBtn{
+  background: none;
+  color: #6C63FF;
+  border-radius: 5px;
+  padding: 10px 35px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border: #6C63FF solid 3px;
+  font-weight: bold;
+  margin-right: 5%;
+  font-size: 1.2rem;
+}
+
+.joinBtn:hover{
+  background: rgba(0, 0, 0, 0.10);
+}
+
+

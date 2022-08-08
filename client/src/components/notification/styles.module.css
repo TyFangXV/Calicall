@@ -1,0 +1,70 @@
+.bellIcon{
+    font-size: xx-large;
+    color: var(--primary-color-light);
+    cursor: pointer;
+}
+
+
+.notificationCard{
+    text-overflow: ellipsis;
+    min-height: 500px;
+    min-width: 350px;
+    max-height: 500px;
+    max-width: 350px;
+    position: absolute;
+    z-index: 2;
+    margin-right: 10px;
+    border-radius: 10px;
+    display:  flex;
+    flex-direction: column;
+    right: 0;
+    display: none;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--secondary-color-light);
+}
+
+
+.notificationCard::after{
+    /* A pointy arraow on top*/
+    content: "";
+    position: absolute;
+    top: -10px;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--secondary-color-light);
+}
+
+.frq{
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    font-size: large;
+    color: black;
+    display:  flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 2px solid black;
+}
+.boilerplate{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.boilerplate p{
+    margin-top: 50%;
+    color: grey;
+}
+
+.closeBtn{
+    cursor: pointer;
+}
+
+.closeBtn:hover{
+    color: grey;
+}
