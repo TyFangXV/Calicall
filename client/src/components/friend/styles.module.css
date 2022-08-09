@@ -38,7 +38,6 @@
 .notifBody{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
 
@@ -56,12 +55,7 @@
     border-radius: 10px;
 }
 
-.inputC{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
+
 .input{
     margin-top: 2%;
     border: none;
@@ -100,3 +94,48 @@
    border-radius: 10px;
 }
 
+.frq_card{
+    padding: 10px 25px 10px 25px;
+    margin-top: 2%;
+    border-radius: 10px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--secondary-color-light);
+}
+
+.friendName{
+    margin-right: 2%;
+    font-size: small;
+    color: var(--primary-color-light);
+}
+
+.Inputs{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn{
+    color: white;
+    margin-right: 5%;
+    border: 2px solid var(--primary-color);
+    background: none;
+    padding: 5px 15px 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: large;
+}
+
+.btn:hover{
+    color:  var(--primary-color-light);
+}

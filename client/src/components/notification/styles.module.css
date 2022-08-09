@@ -39,11 +39,11 @@
 }
 
 .frq{
-    padding: 10px;
+    padding: 10px 5px 10px 5px;
     margin: 5px;
     border-radius: 10px;
-    font-size: large;
-    color: black;
+    font-size: medium;
+    color: var(--primary-color);
     display:  flex;
     flex-direction: row;
     justify-content: space-between;
@@ -63,8 +63,15 @@
 
 .closeBtn{
     cursor: pointer;
+    color: var(--primary-color-mid);
+    font-size: 20px;
 }
 
 .closeBtn:hover{
     color: grey;
+}
+
+.icon{
+    font-size: x-large;
+    color: var(--primary-color-light);
 }

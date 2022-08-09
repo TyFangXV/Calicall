@@ -3,10 +3,10 @@ import styles from './styles.module.css';
 import {AiFillBell} from 'react-icons/ai';
 import Ripple from "../ripple";
 import * as uuid from 'uuid';
-import {BsFillPersonFill} from 'react-icons/bs'
+import {MdCircleNotifications} from 'react-icons/md'
 import {AiFillCloseCircle} from 'react-icons/ai'
 import { SocketContext } from "../../utils/context/socketContext";
-import { INotificationProps } from "../../utils/types";
+import { INotificationProps, IuserAlertMessage } from "../../utils/types";
 
 const Notification:React.FC = () => {
     const [openNotification, setOpenNotification] = React.useState(false);
@@ -15,9 +15,22 @@ const Notification:React.FC = () => {
     const notificationRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        socket.socket.on("receiveNotification", (data) => {
-            addNotification([...notifications, data]);
+        socket.socket.on("userSystemAlert", (data) => {
+            console.log(data);
+            
+            if(data.message.type === "NOTIFICATION"){
+                const notif:INotificationProps = {
+                    id: uuid.v4(),
+                    sender: data.message.to,
+                    message: data.message.message,
+                    messenger: data.message.from,
+                    type: data.message.type
+                }
+                console.log(notif); 
+                addNotification([...notifications, notif]);
+            }
         });
+
 
         window.addEventListener("click", (e) => {
             if (notificationRef.current && !notificationRef.current.contains(e.target as Node)) {
@@ -25,7 +38,7 @@ const Notification:React.FC = () => {
             }
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socket])
+    }, [socket.socket])
 
     const removeNotification = (id:string) => {
         const newNotifications = notifications.filter(notification => notification.id !== id);
@@ -41,29 +54,17 @@ const Notification:React.FC = () => {
             {
                 notifications.length > 0 ? (
                         notifications.map((notification, index) => {
-                            switch(notification.type) 
-                            {
-                                case "FRIEND_REQUEST":
-                                    return (
-                                        <div key={uuid.v4()} className={styles.frq} title={notification.message}>
-                                            <BsFillPersonFill/>
-                                            <span>
-                                                {notification.message}
-                                            </span>
-                                            <div>
-                                                <AiFillCloseCircle className={styles.closeBtn} onClick={() => removeNotification(notification.id)}/>
-                                            </div>
-                                        </div>
-                                    )
-                                default:
-                                    return (
-                                        <div key={uuid.v4()} className={styles.notification}>
-                                            <div className={styles.notificationText}>
-                                                {notification.message}
-                                            </div>
-                                        </div>
-                                    )
-                            }
+                            return (
+                                <div key={uuid.v4()} className={styles.frq} title={notification.message}>
+                                    <MdCircleNotifications className={styles.icon}/>
+                                    <span>
+                                        {notification.message}
+                                    </span>
+                                    <div>
+                                        <AiFillCloseCircle className={styles.closeBtn} onClick={() => removeNotification(notification.id)}/>
+                                    </div>
+                            </div>
+                            )
                         })
                 ) : (
                     <div className={styles.boilerplate}>

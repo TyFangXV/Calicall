@@ -4,7 +4,6 @@
 
 import database from './database';
 
-
 export default async function precheck() {
     try {
         await database.$connect();

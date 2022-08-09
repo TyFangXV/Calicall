@@ -7,19 +7,8 @@ import {Server} from 'socket.io'
 import precheck from './utils/precheck'
 import authRouter from './routes/auth'
 import friendRouter from './routes/friend'
+import {connectedUser, NotificationProps, IuserAlertMessage} from './types'
 
-interface NotificationProps {
-    sender: string
-    message: string
-    type : string
-    messenger: string
-    id: string
-}
-
-interface connectedUser {
-    userId: string
-    connectedID: string
-}
 
 
 dotenv.config();
@@ -61,25 +50,26 @@ socket.on("connection", (IS) => {
     IS.on("initUserConnection", (userID:string) => {
         if(!getUserConnectionID(userID))
         {
-            connectedUser.push({userId : userID, connectedID : IS.id});
+            connectedUser.push({
+                userId: userID,
+                connectedID: IS.id
+            })
             console.log(connectedUser);
         }
     });
 
-    IS.on("sendNotification", (data:NotificationProps) => {
-        const userConnectionID = getUserConnectionID(data.sender);
-        if(userConnectionID)
+    IS.on("userSystemAlert", (data:{userID:string, message:IuserAlertMessage}) => {
+        console.log(data);
+        
+        const connectedID = getUserConnectionID(data.userID);
+        if(connectedID)
         {
-          //send notification to user with a id from the server
-         const x = socket.to(userConnectionID).emit("receiveNotification", {
-            ...data,
-            id : uuid.v4()
-         });
-
+            socket.to(connectedID).emit("userSystemAlertRecieve", data.message);
         }else{
-            console.log("user not found");
+            console.log("user not connected");
         }
     })
+
 
     IS.on("disconnect", () => {
         console.log(`${IS.id} has disconnected`);

@@ -12,3 +12,20 @@ export interface INotificationProps {
     id: string
     messenger: string
 }
+
+export interface IuserAlertMessage {
+    message: string
+    type: string
+    to : string
+    from : string
+}
+
+
+
+export interface IFriendRequest {
+    senderId: string
+    receiverId: string
+    status: string
+    accepted: boolean
+    receiver? : IUser
+}

@@ -5,6 +5,7 @@ import Peer, { SimplePeer } from 'simple-peer'
 import { RecoilRoot, useRecoilValue } from 'recoil'
 import { UserStateAtom } from '../state'
 import AuthProvider from './auth'
+import { IuserAlertMessage } from '../types'
 
 interface Props {
     children: React.ReactNode
@@ -31,7 +32,8 @@ type ContextType = {
     connectUser : (userId:string) => void;
     startCamera : () => void;
     sendNotification : (notification:NotificationProps) => void;
-    socket : Socket
+    socket : Socket;
+    listenUserSystemAlert : (onRecieve:(data:IuserAlertMessage) => void) => void;
 } 
 
 type CallProps = {
@@ -77,6 +79,12 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
                 localUserVideo.current.srcObject = stream
             } 
         })
+    }
+
+    const listenUserSystemAlert = (onRecieve:(data:IuserAlertMessage) => void) => {
+        socket.on("userSystemAlertRecieve", (data) => {
+            onRecieve(data)
+        } )
     }
 
     const answerCall = () => {
@@ -176,7 +184,8 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
                 leaveCall,
                 callUser,
                 sendNotification,
-                socket
+                socket,
+                listenUserSystemAlert
             }}>
                 <AuthProvider>
                     {children}
