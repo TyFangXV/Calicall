@@ -165,7 +165,7 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     }
 
     const connectUser = (userId:string) => {
-        socket.emit("initUserConnection", id);
+        socket.emit("initUserConnection", userId);
     }
 
     return(

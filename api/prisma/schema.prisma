@@ -34,6 +34,7 @@ model Friend {
   senderId   String
   receiverId String
   receiver    User      @relation(fields: [receiverId], references: [id])
+
   accepted   Boolean
   status     String
 }

@@ -26,6 +26,7 @@ export interface IFriendRequest {
     senderId: string
     receiverId: string
     status: string
+    id : string
     accepted: boolean
     receiver? : IUser
 }

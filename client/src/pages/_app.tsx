@@ -2,16 +2,22 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { SocketContextProvider } from '../utils/context/socketContext'
 import { RecoilRoot } from 'recoil'
-import { ThemeProvider } from '@mui/material'
-import { theme } from '../utils/theme'
+import AppViewHandler from './app/handler'
+import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const isHome =
+  router.pathname === '/app' || router.pathname.includes('/app/');
   return (
       <RecoilRoot>
       <SocketContextProvider>
-        <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
-        </ThemeProvider>
+        {isHome ? (
+            <AppViewHandler Component={Component} pageProps={pageProps} />
+          ) : (
+            <Component {...pageProps} />
+          )
+        }
       </SocketContextProvider>
     </RecoilRoot>
   )

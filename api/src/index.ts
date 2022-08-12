@@ -16,6 +16,7 @@ const app = Express()
 const server = http.createServer(app);
 
 //middleware settings
+app.use(require('express-status-monitor')())
 app.use(Express.json())
 app.use(cors())
 app.use("/auth", authRouter)
@@ -47,7 +48,9 @@ socket.on("connection", (IS) => {
         return connectedUser.find(user => user.userId === userID)?.connectedID;
     }
 
-    IS.on("initUserConnection", (userID:string) => {
+    IS.on("initUserConnection", (userID:string) => {   
+        console.log("userID");
+                  
         if(!getUserConnectionID(userID))
         {
             connectedUser.push({
@@ -55,12 +58,11 @@ socket.on("connection", (IS) => {
                 connectedID: IS.id
             })
             console.log(connectedUser);
+            
         }
     });
 
     IS.on("userSystemAlert", (data:{userID:string, message:IuserAlertMessage}) => {
-        console.log(data);
-        
         const connectedID = getUserConnectionID(data.userID);
         if(connectedID)
         {

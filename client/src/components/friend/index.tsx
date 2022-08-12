@@ -5,8 +5,10 @@ import styles from './styles.module.css';
 import axios from "axios";
 import { authContext } from "../../utils/context/auth";
 import * as uuid from 'uuid';
-import { IFriendRequest } from "../../utils/types";
+import { IFriendRequest, IuserAlertMessage } from "../../utils/types";
 import { MdCancel, MdCircleNotifications, MdDone } from "react-icons/md";
+import {AiOutlineMessage} from 'react-icons/ai';
+import {BsClockFill} from 'react-icons/bs'
 import { SocketContext } from "../../utils/context/socketContext";
 
 const Friend:React.FC = () => {
@@ -31,8 +33,20 @@ const Friend:React.FC = () => {
             
         })
         .catch((err) => console.log(err));  
-            
-    }, [])
+        
+        socket.on("userSystemAlert", (data:any) => {
+            if(data.message.type === "FRIEND_REQUEST_UI_UPDATE")
+            {
+                getFriends()
+                .then((res:any[]) => {
+                    setFriendRequest([...res]);
+                    console.log(friendRequest);
+                    
+                })
+                .catch((err) => console.log(err));  
+            }
+        })
+    }, [user, socket])
 
 
 
@@ -40,7 +54,7 @@ const Friend:React.FC = () => {
         if(friendRef.current?.value)
         {
             try {
-            const {data} =  await axios.post(`/api/friendIV`, {
+            const {data} =  await axios.post(`/api/friend/invite`, {
                     friend : friendRef.current?.value,
                     me : user.id
             }, {
@@ -48,6 +62,13 @@ const Friend:React.FC = () => {
                     "Content-Type" : "application/json" 
                 }
             })
+                getFriends()
+                .then((res:any[]) => {
+                    setFriendRequest([...res]);
+                    console.log(friendRequest);
+                    
+                })
+                .catch((err) => console.log(err));  
                 return null;
             } catch (error) {
                 console.log(error);
@@ -58,9 +79,53 @@ const Friend:React.FC = () => {
         }
     }
 
+
+    const accept_decline = async(receiverID:string, status:boolean, id:string) => {
+        try {
+            if(friendRequest.length > 0)
+            {
+                try {
+                    switch(status)
+                    {
+                        case true:
+                            await axios.post(`/api/friend/accept`, {
+                                friend : receiverID,
+                                me : user.id,
+                                id : id
+                            }, {
+                                headers : {
+                                    "Content-Type" : "application/json" 
+                                }
+                            })
+                        case false:
+                            await axios.post(`/api/friend/reject`, {
+                                friend : receiverID,
+                                me : user.id,
+                                id : id
+                            }, {
+                                headers : {
+                                    "Content-Type" : "application/json" 
+                                }
+                            })    
+                    }
+                    return null;
+                } catch (error) {
+                    console.log(error);
+                    return null;
+                }            
+            }else{
+                return null;
+            }            
+        } catch (error) {
+            console.log(error);
+            return null;   
+        }
+
+    }
+
     const getFriends = async() => {
         try {
-            const {data} = await axios.get(`/api/friendVI?me=${user.id}`);
+            const {data} = await axios.get(`/api/friend/me?me=${user.id}`);
             
             return data;
         } catch (error) {
@@ -100,16 +165,38 @@ const Friend:React.FC = () => {
                                                     return (
                                                     <div key={uuid.v4()} className={styles.frq_card}>
                                                       <p className={styles.friendName}>@{friend.receiver?.name}</p>
-                                                        <div className={styles.Inputs}>
-                                                            <button className={styles.btn} style={{backgroundColor : "green"}}>
-                                                                <MdDone/>
-                                                            </button>
-                                                            <button className={styles.btn} style={{backgroundColor : "red"}}>
-                                                                <MdCircleNotifications/>
-                                                            </button>
-                                                        </div>
+                                                            {
+                                                                friend.senderId === user.id ? (
+                                                                    <div className={styles.Inputs}>
+                                                                        <button className={styles.btn} style={{backgroundColor : "#eed202 "}}>
+                                                                            <BsClockFill/>
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className={styles.Inputs}>
+                                                                        <button className={styles.btn} style={{backgroundColor : "green"}} onClick={async() => await accept_decline(friend.receiverId, true, friend.id)}>
+                                                                            <MdDone/>
+                                                                        </button>
+                                                                        <button className={styles.btn} style={{backgroundColor : "red"}} onClick={async() => await accept_decline(friend.receiverId, false, friend.id)}>
+                                                                            <MdCircleNotifications/>
+                                                                        </button>
+                                                                    </div>
+                                                                )
+                                                            }
                                                     </div>
                                                 )
+
+                                                case "ACCEPTED":
+                                                    return(
+                                                    <div key={uuid.v4()} className={styles.frq_card}>
+                                                        <p className={styles.friendName}>@{friend.receiver?.name}</p>
+                                                            <div className={styles.Inputs}>
+                                                                <button className={styles.btn} style={{backgroundColor : "grey"}}>
+                                                                    <AiOutlineMessage/>
+                                                                </button>
+                                                            </div>
+                                                    </div>
+                                                    )
                                             }
                                         })
                                     }

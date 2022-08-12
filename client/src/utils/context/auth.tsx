@@ -1,4 +1,4 @@
-import React, {Context, createContext, useEffect} from 'react'
+import React, {Context, createContext, useEffect, useState} from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { UserStateAtom } from '../state';
 import { IUser } from '../types';
@@ -11,9 +11,16 @@ export const authContext = createContext({} as IUser);
 
 
 const AuthProvider: React.FC<Props> = ({children}) => {
-    const [user, setUser] = useRecoilState(UserStateAtom);
+    const [user, setUser] = useState<IUser>({
+        id: "",
+        name: "",
+        email: "",
+        signedIn: false,
+    });
 
     useEffect(() => {
+    if(!user.signedIn)
+    {
       (async () => {
         try {
             const cachedUserStorage = await caches.keys();
@@ -37,8 +44,10 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         } catch (error) {
             return null;
         }
-      })();      
-    }, [setUser])
+      })(); 
+    }
+    
+    }, [user]);
 
     return (
         <authContext.Provider value={user}>

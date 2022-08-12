@@ -10,7 +10,7 @@
     position: absolute;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    z-index: -3;
+    z-index: 1;
 }
 
 .section2{

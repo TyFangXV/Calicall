@@ -81,7 +81,7 @@ router.post("/invite", async(req,res) => {
                 res.status(400).send("Receiver not found");
             }
         } catch (error) {
-            
+            res.status(500).send("Server Error");
         }
 
     }
@@ -97,8 +97,9 @@ router.post("/getRequest", async(req,res) => {
 
     if(userID)
     {
+        let requests:any[] = []; 
         try {
-            const requests = await prisma.friend.findMany({
+            requests = await prisma.friend.findMany({
                 where : {
                     OR : [
                         {
@@ -109,10 +110,28 @@ router.post("/getRequest", async(req,res) => {
                         }
                     ]
                 },
-                select : {
+                include : {
                     receiver : true,
                 }
-            })
+            })   
+
+            //check if the user is the receiver of the request
+            if(requests.length > 0)
+            {
+                for(let i = 0; i < requests.length; i++)
+                {
+                    if(requests[i].receiverId === userID)
+                    {
+                        const sender = await prisma.user.findUnique({
+                            where : {
+                                id : requests[i].senderId
+                            }
+                        })
+                        requests[i].receiver = sender
+                    }
+                }
+            }
+
             res.status(200).send(requests);
         } catch (error) {
             res.status(400).send(error);
@@ -122,4 +141,115 @@ router.post("/getRequest", async(req,res) => {
     }
 })
 
+
+router.post("/acceptRequest", async(req,res) => {
+    try {
+        const {senderID, receiverID, id} = req.body;
+        if(senderID && receiverID && id)
+        {
+            const friendship = await prisma.friend.findUnique({
+                where : {
+                    id : id
+                }
+            })
+            if(friendship)
+            {
+                await prisma.friend.update({
+                    where : {
+                        id : friendship.id
+                    },
+                    data : {
+                        status : "ACCEPTED",
+                        accepted : true,
+                    }
+                })
+
+
+                const userConnectionID = getUserConnectionID(receiverID);
+
+                if(userConnectionID)
+                {
+                    const senderData = await new User(senderID).getUserData(senderID);
+
+                    socket.to(userConnectionID).emit("userSystemAlert", {
+                        receiverID, 
+                        message : {
+                            from : senderID,
+                            to : receiverID,
+                            message : `${senderData?.name && senderData.name} accepted your friend request`,
+                            type : "NOTIFICATION",
+                         }
+                    })
+
+                    socket.to(userConnectionID).emit("userSystemAlert", {
+                        receiverID, 
+                        message : {
+                            from : senderID,
+                            to : receiverID,
+                            message : `UPDATE_UI`,
+                            type : "FRIEND_REQUEST_UI_UPDATE",
+                         }
+                    })
+                    
+                }
+
+                res.status(200).send(friendship);
+            }else{
+                res.status(400).send("Friendship not found");
+            }
+        }else{
+            res.status(400).send("Missing fields");
+        }
+    } catch (error) {
+        
+    }
+})
+
+router.post("/rejectRequest", async(req,res) => {
+    try {
+        const {senderID, receiverID} = req.body;
+        if(senderID && receiverID)
+        {
+            const friendship = await prisma.friend.findFirst({
+                where : {
+                    senderId : senderID,
+                    receiverId : receiverID
+                }
+            })
+            if(friendship)
+            {
+                await prisma.friend.delete({
+                    where : {
+                        id : friendship.id
+                    }
+                })
+                
+
+                const userConnectionID = getUserConnectionID(receiverID);
+
+                if(userConnectionID)
+                {
+                    socket.to(userConnectionID).emit("userSystemAlert", {
+                        receiverID, 
+                        message : {
+                            from : senderID,
+                            to : receiverID,
+                            message : `UPDATE_UI`,
+                            type : "FRIEND_REQUEST_UI_UPDATE",
+                         }
+                    })
+                    
+                }
+
+                res.status(200).send(friendship);
+            }else{
+                res.status(400).send("Friendship not found");
+            }
+        }else{
+            res.status(400).send("Missing fields");
+        }
+    } catch (error) {
+        
+    }
+})
 export default router
