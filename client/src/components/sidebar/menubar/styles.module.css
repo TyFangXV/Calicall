@@ -1,0 +1,52 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    width: 225px;
+    margin-left: 75px;
+    padding-top: 5vh;
+    height: 95vh;
+    background-color: var(--secondary-color-light);
+    border-bottom-right-radius: 10px;
+}
+
+.friendDiv{
+    margin-top: 30px;
+}
+
+.FriendContainer{
+    cursor: pointer;
+    margin: 0 3px 10px 3px;
+    padding: 10px 5px 10px 5px;
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.FriendContainer:hover{
+    background-color: var(--secondary-color-hover);
+}
+
+.FriendContainer .pfp{
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    color: var(--primary-color-light);
+    border-radius: 50%;
+}
+
+.FriendContainer .username{
+    margin: 0;
+    font-size: small;
+    color: white;
+}
+
+.FriendContainer .marker{
+    margin: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--primary-color-light);
+}

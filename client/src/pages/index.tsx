@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState<string>("");
   const [User, setUser] = useRecoilState<IUser>(UserStateAtom);
-  const user = useContext(authContext);
+  const {user} = useContext(authContext);
 
   useEffect(() => {
       const {v} = router.query;
@@ -69,7 +69,7 @@ const Home: NextPage = () => {
       </Head>
       <nav className={styles.nav}>
         <h1 className={styles.logo}>CaliCall</h1>
-        <button className={styles.joinBtn} onClick={() => router.push( user.signedIn ? "/app" : `http://localhost:5000/auth/getAuthUrl?country=${countryCode}`)}>{user.signedIn ? "Open app" : "Join"}</button>
+        <button className={styles.joinBtn} onClick={() => router.push( user.signedIn ? "/app/" : `http://localhost:5000/auth/getAuthUrl?country=${countryCode}`)}>{user.signedIn ? "Open app" : "Join"}</button>
       </nav>
       <div className={styles.center}>
         <span className={styles.layout_clip}>

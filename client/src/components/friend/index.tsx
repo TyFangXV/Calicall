@@ -13,11 +13,11 @@ import { SocketContext } from "../../utils/context/socketContext";
 
 const Friend:React.FC = () => {
     const [openFriend, setOpenFriend] = React.useState(false);
-    const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([]);
     const {socket} = useContext(SocketContext);
     const friendDivRef = React.useRef<HTMLDivElement>(null);
     const friendRef = React.useRef<HTMLInputElement>(null);
-    const user = useContext(authContext);
+    const {user, friends} = useContext(authContext);
+    const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([...friends]);
 
     useEffect(() => {
         window.addEventListener("click", (e) => {
@@ -25,14 +25,6 @@ const Friend:React.FC = () => {
                 setOpenFriend(false);
             }
         })
-
-        getFriends()
-        .then((res:any[]) => {
-            setFriendRequest([...res]);
-            console.log(friendRequest);
-            
-        })
-        .catch((err) => console.log(err));  
         
         socket.on("userSystemAlert", (data:any) => {
             if(data.message.type === "FRIEND_REQUEST_UI_UPDATE")

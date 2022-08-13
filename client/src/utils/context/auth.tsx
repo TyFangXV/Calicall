@@ -1,13 +1,19 @@
+import axios from 'axios';
 import React, {Context, createContext, useEffect, useState} from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { UserStateAtom } from '../state';
-import { IUser } from '../types';
+import { IFriendRequest, IUser } from '../types';
 
 interface Props {
     children: React.ReactNode
 }
 
-export const authContext = createContext({} as IUser);
+interface AuthContext {
+    user: IUser;
+    friends: IFriendRequest[];
+}
+
+export const authContext = createContext({} as AuthContext);
 
 
 const AuthProvider: React.FC<Props> = ({children}) => {
@@ -17,6 +23,8 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         email: "",
         signedIn: false,
     });
+
+    const [friends, setFriends] = useState<IFriendRequest[]>([]);
 
     useEffect(() => {
     if(!user.signedIn)
@@ -38,6 +46,11 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                         name : userData.user.name,
                         signedIn : true,
                     });
+
+                    const {data} = await axios.post(`/api/friend/me?me=${userData.user.id}`);
+
+                    setFriends([...data]);
+                    
                 }
                 
             }
@@ -47,10 +60,13 @@ const AuthProvider: React.FC<Props> = ({children}) => {
       })(); 
     }
     
-    }, [user]);
+    }, [user, friends]);
 
     return (
-        <authContext.Provider value={user}>
+        <authContext.Provider value={{
+            user,
+            friends,
+        }}>
             {children}
         </authContext.Provider>
     )
