@@ -12,8 +12,6 @@ const SideBar:React.FC = () => {
     if(router.pathname !== "/app/me" && router.pathname !== "/app/me/[id]")
     {
       router.push("/app/me");
-      console.log(router.pathname);
-      
     }
   }
 

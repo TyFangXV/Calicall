@@ -7,7 +7,10 @@ import {Server} from 'socket.io'
 import precheck from './utils/precheck'
 import authRouter from './routes/auth'
 import friendRouter from './routes/friend'
-import {connectedUser, NotificationProps, IuserAlertMessage} from './types'
+import messageRoute from './routes/messages'
+import devRouter from './routes/dev'
+import {connectedUser, NotificationProps, IuserAlertMessage, IMessage} from './types'
+import { instrument } from '@socket.io/admin-ui'
 
 
 
@@ -16,15 +19,16 @@ const app = Express()
 const server = http.createServer(app);
 
 //middleware settings
-app.use(require('express-status-monitor')())
 app.use(Express.json())
 app.use(cors())
+app.use("/dev", devRouter)
 app.use("/auth", authRouter)
 app.use("/friend", friendRouter)
+app.use("/message", messageRoute)
 //socket.io
 export const socket = new Server(server, {
     cors : {
-        origin: '*',
+        origin: "*",
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }
 });
@@ -36,21 +40,13 @@ app.get('/', (req, res) => res.send('Hello World!'));
 //Io server
 // IS - Internal Socket which is basically socket 
 const connectedUser:connectedUser[] = [];
+
 export const getUserConnectionID = (userID:string) => {
     return connectedUser.find(user => user.userId === userID)?.connectedID;
 }
 
 socket.on("connection", (IS) => {
-
-
-    //users fun
-    const getUserConnectionID = (userID:string) => {
-        return connectedUser.find(user => user.userId === userID)?.connectedID;
-    }
-
-    IS.on("initUserConnection", (userID:string) => {   
-        console.log("userID");
-                  
+    IS.on("initUserConnection", (userID:string) => {          
         if(!getUserConnectionID(userID))
         {
             connectedUser.push({
@@ -72,13 +68,29 @@ socket.on("connection", (IS) => {
         }
     })
 
+    IS.on("DM", (data:IMessage) => {
+        const connectedID = getUserConnectionID(data.to);
+        console.log(data);
+        
+        if(connectedID)
+        {
+            socket.to(connectedID).emit("DMRecieve", data);
+        }else{
+            console.log("user not connected");
+        }
+    })
 
     IS.on("disconnect", () => {
         console.log(`${IS.id} has disconnected`);
         connectedUser.splice(connectedUser.findIndex(user => user.connectedID === IS.id), 1);
         
     })
+
 })
+
+
+
+  
 precheck()
     .then(({status, message}) => {
         if(status) {

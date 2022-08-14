@@ -15,6 +15,7 @@ const Home = ({ Component, pageProps}:Props) => {
     const {user} = useContext(authContext);
     const socket = useContext(SocketContext);
 
+    
     useEffect(() => {
         if(typeof window !== "undefined")
         {
@@ -27,6 +28,22 @@ const Home = ({ Component, pageProps}:Props) => {
         }
     })
 
+
+    let connectionTry = 0;    
+
+    useEffect(() => {
+        //If the server got disconnected, try to reconnect every 1 sec for 3 times
+        socket.socket.on("disconnect", () => {
+           if(connectionTry !== 3) {
+              setInterval(() => {
+                socket.connectUser(user.id);
+                connectionTry++;
+              }, 1000);
+           }
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    
     return(
         <div>
             <div>

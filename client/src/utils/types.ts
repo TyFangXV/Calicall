@@ -30,3 +30,10 @@ export interface IFriendRequest {
     accepted: boolean
     receiver? : IUser
 }
+
+export interface IMessage {
+    from: string;
+    to: string;
+    message: string;
+    type: "TEXT" | "GIF"
+}

@@ -10,6 +10,7 @@ import { MdCancel, MdCircleNotifications, MdDone } from "react-icons/md";
 import {AiOutlineMessage} from 'react-icons/ai';
 import {BsClockFill} from 'react-icons/bs'
 import { SocketContext } from "../../utils/context/socketContext";
+import { useRouter } from "next/router";
 
 const Friend:React.FC = () => {
     const [openFriend, setOpenFriend] = React.useState(false);
@@ -18,6 +19,7 @@ const Friend:React.FC = () => {
     const friendRef = React.useRef<HTMLInputElement>(null);
     const {user, friends} = useContext(authContext);
     const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([...friends]);
+    const router = useRouter();
 
     useEffect(() => {
         window.addEventListener("click", (e) => {
@@ -38,6 +40,7 @@ const Friend:React.FC = () => {
                 .catch((err) => console.log(err));  
             }
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, socket])
 
 
@@ -183,7 +186,7 @@ const Friend:React.FC = () => {
                                                     <div key={uuid.v4()} className={styles.frq_card}>
                                                         <p className={styles.friendName}>@{friend.receiver?.name}</p>
                                                             <div className={styles.Inputs}>
-                                                                <button className={styles.btn} style={{backgroundColor : "grey"}}>
+                                                                <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
                                                                     <AiOutlineMessage/>
                                                                 </button>
                                                             </div>

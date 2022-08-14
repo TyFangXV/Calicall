@@ -4,11 +4,14 @@ import { SocketContextProvider } from '../utils/context/socketContext'
 import { RecoilRoot } from 'recoil'
 import AppViewHandler from './app/handler'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isHome =
   router.pathname === '/app' || router.pathname.includes('/app/');
+
+
   return (
       <RecoilRoot>
       <SocketContextProvider>

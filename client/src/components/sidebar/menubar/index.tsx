@@ -23,9 +23,7 @@ const FriendButton: React.FC<IUser> = (data) => {
 };
 
 const SideMenuBar: React.FC = () => {
-  const { friends } = useContext(authContext);
-  console.log(friends);
-  
+  const { friends } = useContext(authContext);  
   return (
     <div className={styles.container}>
       {friends.length !== 0 && (

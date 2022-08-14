@@ -17,3 +17,11 @@ export interface IuserAlertMessage {
     to : string
     from : string
 }
+
+
+export interface IMessage {
+    from: string;
+    to: string;
+    message: string;
+    type: "TEXT" | "GIF"
+}

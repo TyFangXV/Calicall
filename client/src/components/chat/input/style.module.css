@@ -1,0 +1,26 @@
+.container{
+ position: relative;
+}
+
+.input{
+    width: 65vw;
+    height: 40px;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-size: 14px;
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
+    border: none;
+    z-index: 1;
+    background: none;
+    background-color: var(--primary-color-light);
+}
+
+.input:focus{
+    background-color: var(--primary-color-mid);
+}
+
+.input::placeholder{
+    font-size: small;
+    color: rgba(255, 255, 255, 0.5);
+}

@@ -38,3 +38,11 @@ model Friend {
   accepted   Boolean
   status     String
 }
+
+model Message{
+  id         String    @id @default(cuid())
+  created_at DateTime
+  senderId   String
+  receiverId String
+  content    String
+}

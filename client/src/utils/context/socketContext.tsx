@@ -5,7 +5,7 @@ import Peer, { SimplePeer } from 'simple-peer'
 import { RecoilRoot, useRecoilValue } from 'recoil'
 import { UserStateAtom } from '../state'
 import AuthProvider from './auth'
-import { IuserAlertMessage } from '../types'
+import { IMessage, IuserAlertMessage } from '../types'
 
 interface Props {
     children: React.ReactNode
@@ -25,14 +25,15 @@ type ContextType = {
     call: any;
     UserVideo: React.RefObject<HTMLVideoElement>;
     localUserVideo: React.RefObject<HTMLVideoElement>;
+    socket : Socket;
     setLocalUser : (name:string) => void;
     answerCall : () => void;
     leaveCall : () => void;
     callUser : (userId:string) => void;
     connectUser : (userId:string) => void;
     startCamera : () => void;
+    sendMessage : (message:IMessage) => void;
     sendNotification : (notification:NotificationProps) => void;
-    socket : Socket;
     listenUserSystemAlert : (onRecieve:(data:IuserAlertMessage) => void) => void;
 } 
 
@@ -57,18 +58,6 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     const UserVideo = useRef<HTMLVideoElement>(null);
     const localUserVideo = useRef<HTMLVideoElement>(null);
     const connectionRef = useRef<any>();
-    
-
-    useEffect(() => {
-        socket.on("callUser", ({from, localUser:CallerName, signal}) => {
-            setCall({
-                isRecivingCall: true,
-                CallerName,
-                from,
-                signal
-            })
-        })
-    }, [])
 
     const startCamera = () => {
         navigator.mediaDevices.getUserMedia({video: true, audio: true})
@@ -87,71 +76,19 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
         } )
     }
 
+    const sendMessage = (message:IMessage) => {
+        socket.emit("DM", message);
+    }
+
     const answerCall = () => {
-        setCallAccepted(true);
-
-        const peer = new Peer({
-            initiator: false,
-            stream: stream,
-            trickle: false
-        })
-
-        peer.on("signal", data => {
-            socket.emit("acceptCall", {
-                signal : data,
-                to : call?.from
-            })
-        })
-
-        peer.on('stream', currentStream => {
-            if(UserVideo.current)
-            {
-                UserVideo.current.srcObject = currentStream
-            } 
-        })
-
-        peer.signal(call?.signal);
-
-        connectionRef.current = peer;
     };
 
     const callUser = (userId:string) => {
-        const peer = new Peer({
-            initiator: true,
-            stream: stream,
-            trickle: false
-        })
 
-        peer.on("signal", data => {
-            socket.emit("callUser", {
-                userToCall: userId,
-                signal: data,
-                from: localUser,
-            })
-        })
-
-        peer.on('stream', currentStream => {
-            if(UserVideo.current)
-            {
-                UserVideo.current.srcObject = currentStream
-            } 
-        })
-
-        socket.on("acceptCall", (signal) => {
-            setCallAccepted(true);
-            peer.signal(signal);
-        })
-
-
-        connectionRef.current = peer;
     };
 
     const leaveCall = () => {
-        setCallEnded(true);
 
-        connectionRef.current.destroy();
-
-        window.location.reload();
     };
 
     const sendNotification = ({messenger, sender, message}:NotificationProps) => {
@@ -185,14 +122,16 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
                 callUser,
                 sendNotification,
                 socket,
-                listenUserSystemAlert
+                listenUserSystemAlert,
+                sendMessage
             }}>
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
-            </SocketContext.Provider>            
+                <RecoilRoot>
+                    <AuthProvider>
+                        {children}
+                    </AuthProvider>
+                </RecoilRoot>
+            </SocketContext.Provider>
     )
-
 }
 
 export {SocketContext, SocketContextProvider}
