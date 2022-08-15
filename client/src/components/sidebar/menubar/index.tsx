@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
+import { BsArrowRight } from 'react-icons/bs';
+import { FaUserFriends } from 'react-icons/fa';
 import { authContext } from '../../../utils/context/auth';
 import { IFriendRequest, IUser } from '../../../utils/types';
 import styles from './styles.module.css';
@@ -11,12 +13,15 @@ const FriendButton: React.FC<IUser> = (data) => {
 
   return (
     <div className={styles.FriendContainer} onClick={() => router.push(`/app/me/${data.id}`)}>
-      <img
-        src={'https://xsgames.co/randomusers/avatar.php?g=pixel'}
-        alt="image"
-        className={styles.pfp}
-      />
-      <p className={styles.username}>{data.name}</p>
+      <div style={{display: "flex", alignItems : "center"}}>
+        <img
+          src={'https://xsgames.co/randomusers/avatar.php?g=pixel'}
+          alt="image"
+          className={styles.pfp}
+        />
+        <p className={styles.username}>{data.name}</p>        
+      </div>
+
       <span className={styles.marker}></span>
     </div>  
   );
@@ -24,8 +29,20 @@ const FriendButton: React.FC<IUser> = (data) => {
 
 const SideMenuBar: React.FC = () => {
   const { friends } = useContext(authContext);  
+  const router = useRouter();
   return (
     <div className={styles.container}>
+      <div className={styles.friendBtn} onClick={() => router.push("/app/me")}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}>
+          <FaUserFriends className={styles.friendIcon}/>
+          <p className={styles.friendTitle}>Friends</p>          
+        </div>
+        <BsArrowRight className={styles.FriendPointyArrow}/>
+      </div>
+      <hr className={styles.breaker}/>
       {friends.length !== 0 && (
         <div className={styles.friendDiv}>
           {friends.map((friend: IFriendRequest) => {

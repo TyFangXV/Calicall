@@ -42,7 +42,9 @@ type CallProps = {
 }
 
 
-const socket = io("http://localhost:5000");
+const socket = io("http://localhost:5000", {
+    transports: ["websocket"],
+});
 
 const SocketContext = createContext({} as ContextType);
 

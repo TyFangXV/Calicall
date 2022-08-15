@@ -1,0 +1,83 @@
+.container{
+    width: 80vw;
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 80vh;
+}
+
+
+.container::-webkit-scrollbar {
+    width: 0.5em;
+  }
+   
+  .container::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+   
+  .container::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color-light);
+  }
+
+.messageContainer{
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.SBubble{
+    margin: 2% 2% 1% 0%;
+    float: right;
+}
+
+.username{
+    font-size: xx-small;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.SenderBubble{
+    padding: 10px 20px 10px 20px;
+    background-color: var(--primary-color-mid);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    align-items: center;
+    color: white;
+    border-radius: 10px;
+}
+
+.Gif{
+    box-shadow: none !important;
+    border: none;
+    width: 300px;
+    cursor: pointer;
+    pointer-events: none;
+    height: 300px;
+    z-index: -1;
+}
+
+
+.FBubble{
+    margin: 2% 0 1% 1%;
+    float: left;
+}
+
+.FriendBubble{
+    padding: 10px 20px 10px 20px;
+    background-color: var(--secondary-color-light);
+    display: flex;
+    flex-direction: row;
+box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 10px;
+}
+
+.text{
+    margin: 0;
+    padding: 0;
+}

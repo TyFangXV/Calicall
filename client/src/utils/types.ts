@@ -37,3 +37,11 @@ export interface IMessage {
     message: string;
     type: "TEXT" | "GIF"
 }
+
+export interface IClientMessage {
+    from: string;
+    to: string;
+    message: string;
+    created_at: Date;
+    type: "TEXT" | "GIF"
+}

@@ -30,8 +30,15 @@ const Input: React.FC<IProps> = ({ name, friendId, onEnter }) => {
       <Giphy
         onBtnPress={() => setType('GIF')}
         onclick={(url) => {
-          setValue(url);
- 
+          let pressed = false;
+          if(!pressed)
+          {
+            onEnter({
+              ...message,
+              message: url,
+            });
+            pressed = true;
+          }
         }}
       />
 

@@ -129,78 +129,80 @@ const Friend:React.FC = () => {
         }
     }
 
-    return (
-        <div ref={friendDivRef}>
-            <Ripple>
-                <FaUserFriends className={styles.friendIcon} onClick={() => setOpenFriend(!openFriend)}/>
-            </Ripple>
-            <div className={styles.body} style={{display : openFriend ? "flex" : "none"}}>
-                <div className={styles.notifBody}>
-                    <span className={styles.sendFrqSec}>
-                        <p className={styles.subtitleName}>Send a Friend request</p>
-                        <div>
-                            <input ref={friendRef} className={styles.input} placeholder="Enter User's ID"/>
-                            <button onClick={async() => await sendFriendRequest()} className={styles.sendBtn}>Send</button>
-                        </div>
-                    </span>
-                    <span className={styles.breaker}></span>
-                    <div className={styles.list}>
-                        {
-                            friendRequest.length === 0 ? (
-                                <div>
-                                    <p className={styles.boilerplate}>No friend requests</p>
-                                </div>
-                            ) : (
-                                <div>
-                                    {
-                                        friendRequest.map((friend, index) => {
-                                            switch(friend.status)
-                                            {
-                                                case "PENDING":
-                                                    return (
-                                                    <div key={uuid.v4()} className={styles.frq_card}>
-                                                      <p className={styles.friendName}>@{friend.receiver?.name}</p>
-                                                            {
-                                                                friend.senderId === user.id ? (
-                                                                    <div className={styles.Inputs}>
-                                                                        <button className={styles.btn} style={{backgroundColor : "#eed202 "}}>
-                                                                            <BsClockFill/>
-                                                                        </button>
-                                                                    </div>
-                                                                ) : (
-                                                                    <div className={styles.Inputs}>
-                                                                        <button className={styles.btn} style={{backgroundColor : "green"}} onClick={async() => await accept_decline(friend.receiverId, true, friend.id)}>
-                                                                            <MdDone/>
-                                                                        </button>
-                                                                        <button className={styles.btn} style={{backgroundColor : "red"}} onClick={async() => await accept_decline(friend.receiverId, false, friend.id)}>
-                                                                            <MdCircleNotifications/>
-                                                                        </button>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                    </div>
-                                                )
 
-                                                case "ACCEPTED":
-                                                    return(
-                                                    <div key={uuid.v4()} className={styles.frq_card}>
-                                                        <p className={styles.friendName}>@{friend.receiver?.name}</p>
-                                                            <div className={styles.Inputs}>
-                                                                <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
-                                                                    <AiOutlineMessage/>
-                                                                </button>
-                                                            </div>
-                                                    </div>
+    const Input:React.FC = () => {
+        return (
+            <div>
+                <input ref={friendRef} className={styles.input} placeholder="Enter User's ID"/>
+                <button onClick={async() => await sendFriendRequest()} className={styles.sendBtn}>Send</button>
+            </div>
+        )
+    }
+
+
+    const FriendList:React.FC = () => {
+        return (
+            <div className={styles.list}>
+            {
+                friendRequest.length === 0 ? (
+                    <div>
+                        <p className={styles.boilerplate}>No friend requests</p>
+                    </div>
+                ) : (
+                    <div>
+                        {
+                            friendRequest.map((friend, index) => {
+                                switch(friend.status)
+                                {
+                                    case "PENDING":
+                                        return (
+                                        <div key={uuid.v4()} className={styles.frq_card}>
+                                          <p className={styles.friendName}>@{friend.receiver?.name}</p>
+                                                {
+                                                    friend.senderId === user.id ? (
+                                                        <div className={styles.Inputs}>
+                                                            <button className={styles.btn} style={{backgroundColor : "#eed202 "}}>
+                                                                <BsClockFill/>
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className={styles.Inputs}>
+                                                            <button className={styles.btn} style={{backgroundColor : "green"}} onClick={async() => await accept_decline(friend.receiverId, true, friend.id)}>
+                                                                <MdDone/>
+                                                            </button>
+                                                            <button className={styles.btn} style={{backgroundColor : "red"}} onClick={async() => await accept_decline(friend.receiverId, false, friend.id)}>
+                                                                <MdCircleNotifications/>
+                                                            </button>
+                                                        </div>
                                                     )
-                                            }
-                                        })
-                                    }
-                                </div>
-                            )
+                                                }
+                                        </div>
+                                    )
+
+                                    case "ACCEPTED":
+                                        return(
+                                        <div key={uuid.v4()} className={styles.frq_card}>
+                                            <p className={styles.friendName}>@{friend.receiver?.name}</p>
+                                                <div className={styles.Inputs}>
+                                                    <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
+                                                        <AiOutlineMessage/>
+                                                    </button>
+                                                </div>
+                                        </div>
+                                        )
+                                }
+                            })
                         }
                     </div>
-                </div>
-            </div>
+                )
+            }
+        </div>
+        )
+    }
+
+    return (
+        <div ref={friendDivRef}>
+            
         </div>
     )
 }

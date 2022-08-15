@@ -47,7 +47,6 @@ const Home = ({ Component, pageProps}:Props) => {
     return(
         <div>
             <div>
-                <AppBar/>
                 <div style={{position : "absolute", left : "0", top : "0"}}>
                   <SideBar/>
                 </div>

@@ -13,7 +13,7 @@
     border: none;
     z-index: 1;
     background: none;
-    background-color: var(--primary-color-light);
+    background-color: var(--primary-color-mid);
 }
 
 .input:focus{

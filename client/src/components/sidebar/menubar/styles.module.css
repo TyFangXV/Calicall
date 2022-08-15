@@ -3,15 +3,14 @@
     flex-direction: column;
     width: 225px;
     margin-left: 75px;
-    padding-top: 5vh;
-    height: 95vh;
-    background-color: var(--secondary-color-light);
+    height: 98.5vh;
+    padding-top: 1.5vh;
+    border-right: 2px solid var(--primary-color-mid);
+    background-color: #2a2c32;
     border-bottom-right-radius: 10px;
 }
 
-.friendDiv{
-    margin-top: 30px;
-}
+
 
 .FriendContainer{
     cursor: pointer;
@@ -19,7 +18,6 @@
     padding: 10px 5px 10px 5px;
     display: flex;
     align-items: center;
-    background-color: var(--secondary-color);
     border-radius: 10px;
     flex-direction: row;
     justify-content: space-between;
@@ -32,7 +30,7 @@
 .FriendContainer .pfp{
     width: 30px;
     height: 30px;
-    margin: 0;
+    margin: 0 10px 0 0;
     color: var(--primary-color-light);
     border-radius: 50%;
 }
@@ -49,4 +47,43 @@
     height: 5px;
     border-radius: 50%;
     background-color: var(--primary-color-light);
+}
+
+.friendBtn{
+    display:  flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 1px 5px 1px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.breaker{
+  border: 1.5px solid var(--secondary-color-light);
+  margin: 0 5px 20px 5px;
+  border-radius: 10px;
+  background-color: var(--secondary-color-light);
+}
+
+.friendBtn:hover{
+    background-color: var(--secondary-color-hover);
+}
+
+.friendBtn:hover .FriendPointyArrow{
+    color: white;
+}
+
+.friendIcon{
+    font-size: xx-large;
+    color: var(--primary-color-light);
+    cursor: pointer;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.FriendPointyArrow{
+    font-size: large;
+    margin-right: 10px;
 }

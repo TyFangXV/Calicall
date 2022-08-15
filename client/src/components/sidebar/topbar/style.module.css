@@ -1,0 +1,35 @@
+.container{
+    min-width: 80vw;
+    padding-right: 5px;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-color);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.btn{
+    padding-right: 20px;  
+}
+
+.callBtn{
+    font-size: 1.5rem;
+    color: var(--primary-color-mid);
+    cursor: pointer;
+}
+
+.callBtn:hover{
+    color: white;
+}
+
+.username{
+    padding-left: 10px;
+    margin: 0;
+    font-size: medium;
+    color: var(--primary-color-light);
+    font-weight: normal;
+}
+
