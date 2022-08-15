@@ -34,15 +34,14 @@ model Friend {
   senderId   String
   receiverId String
   receiver    User      @relation(fields: [receiverId], references: [id])
-
   accepted   Boolean
   status     String
 }
 
-model Message{
+model DMMessage{
   id         String    @id @default(cuid())
   created_at DateTime
-  senderId   String
-  receiverId String
-  content    String
+  from   String
+  to String
+  message    String
 }

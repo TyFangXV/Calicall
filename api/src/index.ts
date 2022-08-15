@@ -11,6 +11,7 @@ import messageRoute from './routes/messages'
 import devRouter from './routes/dev'
 import {connectedUser, NotificationProps, IuserAlertMessage, IMessage} from './types'
 import { instrument } from '@socket.io/admin-ui'
+import prisma from './utils/database'
 
 
 
@@ -27,6 +28,7 @@ app.use("/friend", friendRouter)
 app.use("/message", messageRoute)
 //socket.io
 export const socket = new Server(server, {
+    transports: ["websocket"],
     cors : {
         origin: "*",
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -70,11 +72,16 @@ socket.on("connection", (IS) => {
 
     IS.on("DM", (data:IMessage) => {
         const connectedID = getUserConnectionID(data.to);
-        console.log(data);
-        
-        if(connectedID)
+        const senderID = getUserConnectionID(data.from);
+        const message = {
+            ...data,
+            id: uuid.v4(),
+            created_at: new Date()
+        }
+        if(connectedID && senderID)
         {
-            socket.to(connectedID).emit("DMRecieve", data);
+            socket.to(connectedID).emit("DMRecieve", message);
+            socket.to(senderID).emit("DMSend", message);
         }else{
             console.log("user not connected");
         }
