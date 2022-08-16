@@ -7,14 +7,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-    const {me:userID} = req.query;
+    const {me:userID, friend:senderID} = req.body;
 
     
-    if(userID)
+    if(senderID && userID)
     {
         try {
-            const {data} = await axios.post("http://localhost:5000/friend/getRequest", {
-                userID
+            const {data} = await axios.post("http://localhost:5000/message/get", {
+                userID,
+                senderID
             })
 
             res.status(200).send(data);
@@ -23,9 +24,9 @@ export default async function handler(
         }        
     }
 
-    if(!userID)
+    if(!senderID || !userID)
     {
-        res.status(400).send("ID not found");
+        res.status(400).send("Param not found");
     }
 
 }

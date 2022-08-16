@@ -2,6 +2,17 @@ import { atom } from "recoil";
 import { IMessage, IUser } from "../types";
 
 
+interface IUnseemMessagesDM {
+    ChannelID:IUser,
+    MessageID:IMessage
+}
+
+interface IuserAlertMessage {
+    id: string;
+    message: string;
+    onclick?: () => void;
+  }
+
 export const UserStateAtom = atom<IUser>({
     key: "UserState",
     default: {
@@ -13,12 +24,21 @@ export const UserStateAtom = atom<IUser>({
 })
 
 
-export const LocalInputMessageAtom = atom<IMessage>({
-    key: "LocalInputMessage",
+export const UnSeemMessage = atom<IUnseemMessagesDM[]>({
+    key: "UnSeemMessage",
+    default: []
+})
+
+export const chatWindowScrolled = atom<boolean>({
+    key: "chatWindowScrolled",
+    default: false
+})
+
+export const UserAlertAtom = atom<IuserAlertMessage>({
+    key: "UserAlert",
     default: {
         message: "",
-        type : "TEXT",
-        from : "",
-        to : "",
+        id : "",
+        onclick : () => {},
     }
 })

@@ -41,7 +41,13 @@ export interface IMessage {
 export interface IClientMessage {
     from: string;
     to: string;
+    id : string;
     message: string;
     created_at: Date;
     type: "TEXT" | "GIF"
+}
+
+export interface DMMessageType {
+    User:IUser,
+    Message:IClientMessage
 }

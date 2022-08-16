@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { authContext } from '../../../utils/context/auth';
-import { LocalInputMessageAtom } from '../../../utils/state';
 import { IMessage } from '../../../utils/types';
 import Giphy from '../giphy';
 import style from './style.module.css';

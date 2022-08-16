@@ -26,8 +26,8 @@
 
 
 .SBubble{
-    margin: 2% 2% 1% 0%;
-    float: right;
+    margin: 2% 0 1% 1%;
+    float: left;
 }
 
 .username{
@@ -61,8 +61,8 @@
 
 
 .FBubble{
-    margin: 2% 0 1% 1%;
-    float: left;
+    margin: 2% 2% 1% 0%;
+    float: right;
 }
 
 .FriendBubble{

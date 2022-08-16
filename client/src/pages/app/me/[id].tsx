@@ -10,6 +10,7 @@ import Input from '../../../components/chat/input';
 import { SocketContext } from '../../../utils/context/socketContext';
 import TopBar from '../../../components/sidebar/topbar';
 import ChatInterface from '../../../components/message';
+import axios from 'axios';
 
 const Chat: NextPage = () => {
   const router = useRouter();
@@ -18,6 +19,10 @@ const Chat: NextPage = () => {
   const [friend, setFriend] = React.useState<IUser>();
   const [messages, setMessages] = React.useState<IClientMessage[]>([]);
   const {sendMessage, socket} = useContext(SocketContext);
+  const {user} = useContext(authContext);
+
+  let hasFetchedOldMessages = false;
+  const setHasFetchedOldMessages = () => hasFetchedOldMessages = true;
 
   useEffect(() => {
     if (id) {
@@ -25,6 +30,35 @@ const Chat: NextPage = () => {
       setFriend(friend?.receiver);
     }
   }, [friends, id, router]);
+
+  useEffect(() => {
+    if(!hasFetchedOldMessages)
+    {
+      (async() => {
+        console.log('fetching old messages');
+        
+        try {
+          const {data:msg} = await axios.post('/api/message/get', {
+            me: user.id,
+            friend: id,
+          })   
+          
+          //check if the message is already stored in the state
+          if(msg.length > 0)
+          {
+            const newMessages = msg.filter((message:IClientMessage) => !messages.find((m) => m.id === message.id));
+            setMessages([...messages, ...newMessages]);
+          }
+          setHasFetchedOldMessages();
+        } catch (error) {
+          console.log(error);
+          setHasFetchedOldMessages();
+        }
+
+      })()      
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user.id])
 
 
   useEffect(() => {

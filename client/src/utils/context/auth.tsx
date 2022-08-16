@@ -1,7 +1,5 @@
 import axios from 'axios';
 import React, {Context, createContext, useEffect, useState} from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { UserStateAtom } from '../state';
 import { IFriendRequest, IUser } from '../types';
 
 interface Props {
@@ -47,10 +45,11 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                         signedIn : true,
                     });
 
-                    const {data} = await axios.post(`/api/friend/me?me=${userData.user.id}`);
+                    const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`);
 
-                    setFriends([...data]);
+                    setFriends([...Friends]);
                     
+
                 }
                 
             }

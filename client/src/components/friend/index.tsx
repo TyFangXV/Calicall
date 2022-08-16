@@ -139,6 +139,14 @@ const Friend:React.FC = () => {
         )
     }
 
+    const Breaker:React.FC = () => {
+        return (
+            <div>
+                <hr className={styles.breaker}/>
+            </div>
+        )
+
+    }
 
     const FriendList:React.FC = () => {
         return (
@@ -200,9 +208,15 @@ const Friend:React.FC = () => {
         )
     }
 
+
+
+
     return (
-        <div ref={friendDivRef}>
-            
+        <div ref={friendDivRef} className={styles.container}>
+            <div>
+                <Input/>
+                <Breaker/>
+            </div>
         </div>
     )
 }

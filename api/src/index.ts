@@ -61,16 +61,19 @@ socket.on("connection", (IS) => {
     });
 
     IS.on("userSystemAlert", (data:{userID:string, message:IuserAlertMessage}) => {
+        console.log(data);
         const connectedID = getUserConnectionID(data.userID);
         if(connectedID)
         {
+            console.log("Notif send");
+            
             socket.to(connectedID).emit("userSystemAlertRecieve", data.message);
         }else{
             console.log("user not connected");
         }
     })
 
-    IS.on("DM", (data:IMessage) => {
+    IS.on("DM", async(data:IMessage) => {
         const connectedID = getUserConnectionID(data.to);
         const senderID = getUserConnectionID(data.from);
         const message = {
@@ -78,12 +81,41 @@ socket.on("connection", (IS) => {
             id: uuid.v4(),
             created_at: new Date()
         }
+
+        const msg = await prisma.dMMessage.create({
+            data: {
+                ...message,
+            }
+        })
+
+
         if(connectedID && senderID)
         {
-            socket.to(connectedID).emit("DMRecieve", message);
-            socket.to(senderID).emit("DMSend", message);
+            //create the message in the database and send it to the reciever
+            if(msg)
+            {
+                socket.to(connectedID).emit("DMRecieve", message);
+                socket.to(senderID).emit("DMSend", message);
+                socket.to(connectedID).emit("userSystemAlertRecieve", {
+                    userID: data.to,
+                    message : {
+                        from : senderID,
+                        to : data.to,
+                        message : {
+                            ChannelID : data.to,
+                            MessageID : message.id,
+                        },
+                        type : "UNSEEN_MESSAGE_DM",
+                     }
+                })
+            }
+
+            if(!msg)
+            {
+                console.log("message not sent");
+            }
         }else{
-            console.log("user not connected");
+            socket.to(senderID as string).emit("DMSend", message);
         }
     })
 

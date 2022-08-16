@@ -55,7 +55,6 @@
     align-items: center;
     justify-content: space-between;
     margin: 2px 1px 5px 1px;
-    background-color: var(--secondary-color);
     border-radius: 5px;
     cursor: pointer;
 }

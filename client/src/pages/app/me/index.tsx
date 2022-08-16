@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import Head from "next/head";
+import Friend from "../../../components/friend";
 import SideMenuBar from "../../../components/sidebar/menubar";
 
 
@@ -9,8 +10,16 @@ const Me:NextPage = () => {
             <Head>
                 <title>DM</title>
             </Head>
-            <div>
-                <SideMenuBar/>
+            <div style={{
+                display: 'flex',
+                flexDirection : "row"
+            }}>
+                <div>
+                    <SideMenuBar />
+                </div>
+                <div>
+                    <Friend />
+                </div>
             </div>
         </div>
     )

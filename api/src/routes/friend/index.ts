@@ -44,17 +44,6 @@ router.post("/invite", async(req,res) => {
 
                     if(userConnectionID)
                     {
-                        const senderData = await new User(senderID).getUserData(senderID);
-
-                        socket.to(userConnectionID).emit("userSystemAlert", {
-                            receiverID, 
-                            message : {
-                                from : senderID,
-                                to : receiverID,
-                                message : `You have a new friend request from ${senderData?.name && senderData.name}`,
-                                type : "NOTIFICATION",
-                             }
-                        })
 
                         socket.to(userConnectionID).emit("userSystemAlert", {
                             receiverID, 

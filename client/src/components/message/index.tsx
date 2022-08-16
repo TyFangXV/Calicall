@@ -5,6 +5,8 @@ import styles from './style.module.css';
 import * as uuid from 'uuid';
 import { authContext } from '../../utils/context/auth';
 import Image from 'next/image';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { chatWindowScrolled } from '../../utils/state';
 
 interface IProps {
   Messages: IClientMessage[];
@@ -21,6 +23,7 @@ const GIF:React.FC<{url:string}> = ({url}) => {
 }
 
 const TEXT:React.FC<{text:string}> = ({text}) => {
+  useEffect(() => {},[])
     return (
         <div>
             {
@@ -42,6 +45,8 @@ const SenderBubble: React.FC<{ Message: IClientMessage; User: IUser }> = ({
   Message,
   User,
 }) => {
+
+
   return (
     <div className={styles.SBubble}>
       <p className={styles.username}>@Me</p>
@@ -60,6 +65,14 @@ const FriendBubble: React.FC<{ Message: IClientMessage; Friend: IUser }> = ({
   Message,
   Friend,
 }) => {
+  const hasScrolled = useRecoilValue(chatWindowScrolled);
+
+  useEffect(() => {
+    if (hasScrolled) 
+    {
+
+    }
+  },[hasScrolled])
   return (
     <div className={styles.FBubble}>
       <p className={styles.username}>@{Friend.name}</p>
@@ -76,9 +89,11 @@ const FriendBubble: React.FC<{ Message: IClientMessage; Friend: IUser }> = ({
 
 const ChatInterface: React.FC<IProps> = ({ Messages, Friend }) => {
   const { user } = useContext(authContext);
-  useEffect(
-    //scroll to bottom of chat
-    () => {
+  const [WindowScrolled, setWindowScrolled] = useRecoilState(chatWindowScrolled);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+      //scroll to bottom of chat
       const chat = document.getElementById('chat');
       if (chat) {
         chat.scrollTop = chat.scrollHeight;
@@ -87,19 +102,28 @@ const ChatInterface: React.FC<IProps> = ({ Messages, Friend }) => {
     [Messages]
   );
 
+  useEffect(() => {
+    if(containerRef.current)
+    {
+        containerRef.current.addEventListener('scroll', () => {
+          setWindowScrolled(true);
+        });
+    }
+  }, []);
+
   return (
-    <div className={styles.container} id="chat">
+    <div className={styles.container} id="chat" ref={containerRef}>
       <div className={styles.messageContainer}>
         {Messages.length > 0 &&
           Messages.map((m, i) => {
             return (
               <div key={uuid.v4()} className={styles.message}>
                 {m.from === user.id ? (
-                  <div>
+                  <div id={m.id}>
                     <SenderBubble Message={m} User={user} />
                   </div>
                 ) : (
-                  <div>
+                  <div id={m.id}>
                     <FriendBubble Message={m} Friend={Friend} />
                   </div>
                 )}
