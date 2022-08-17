@@ -7,11 +7,13 @@ import { SocketContext } from "../../utils/context/socketContext";
 import { useRecoilState } from "recoil";
 import { UnSeemMessage } from "../../utils/state";
 import { useAlert } from "../alert";
+import { authContext } from "../../utils/context/auth";
 
 const SideBar:React.FC = () => {
   const router = useRouter();
   const {socket} = useContext(SocketContext);
   const [Notif, setNotif] = useRecoilState(UnSeemMessage);
+  const {friends} = useContext(authContext)
   const {newAlert} = useAlert();
 
   const handleClick = () => {
@@ -26,7 +28,13 @@ const SideBar:React.FC = () => {
     socket.on("userSystemAlertRecieve", (data:any) => {    
       if(data.message.type === "UNSEEN_MESSAGE_DM")
       {
-        newAlert("New Notif");
+        console.log(data.message.message);
+        
+        newAlert(
+        `New message from @${friends.find(f => f.receiver?.id === data.message.message.UserID)?.receiver?.name}`, 
+        () => router.push(`/app/me/${data.message.message.UserID}`),
+        "INFO"
+        );
       }
     })
   }, [newAlert, socket])

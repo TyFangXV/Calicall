@@ -102,7 +102,7 @@ socket.on("connection", (IS) => {
                         from : senderID,
                         to : data.to,
                         message : {
-                            ChannelID : data.to,
+                            UserID : data.from,
                             MessageID : message.id,
                         },
                         type : "UNSEEN_MESSAGE_DM",

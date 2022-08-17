@@ -8,6 +8,7 @@ interface IUnseemMessagesDM {
 }
 
 interface IuserAlertMessage {
+    type : "INFO" | "WARNING" | "ERROR"
     id: string;
     message: string;
     onclick?: () => void;
@@ -38,6 +39,7 @@ export const UserAlertAtom = atom<IuserAlertMessage>({
     key: "UserAlert",
     default: {
         message: "",
+        type: "INFO",
         id : "",
         onclick : () => {},
     }

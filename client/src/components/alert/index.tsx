@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { motion } from "framer-motion"
 import * as uuid from 'uuid';
 import { UserAlertAtom } from '../../utils/state';
 import styles from './style.module.css';
+import { type } from 'os';
 
 interface IProps {
   children: React.ReactNode;
@@ -10,18 +12,24 @@ interface IProps {
 }
 
 interface IuserAlertMessage {
+  type : "INFO" | "WARNING" | "ERROR"
   id: string;
   message: string;
   onclick?: () => void;
 }
 
+type Type = {
+  type: "INFO" | "WARNING" | "ERROR"
+}
+
 export const useAlert = () => {
   const [userAlert, setUserAlert] = useRecoilState(UserAlertAtom);
 
-  const newAlert = (message: string, onClick?: () => void) => {
+  const newAlert = (message: string, onClick?: () => void, type?:"INFO" | "WARNING" | "ERROR") => {
     setUserAlert({
       id: uuid.v4(),
       message,
+      type : type ? type : "INFO",
       onclick: onClick,
     });
   };
@@ -43,9 +51,20 @@ const AlertContainer: React.FC<IProps> = ({ children, AlertMessage }) => {
 
   return (
     <div>
-      <div className={styles.popupNotif}>
-        <p>{userAlert.message}</p>
-      </div>
+        {
+          userAlert.message !== '' && (
+            <motion.div
+                animate={{ y: 100 }}
+                transition={{ ease: "easeOut", duration:1 }}
+                className={styles.popupNotif}
+            >
+              <audio src={`/sound/${AlertMessage.type.toLocaleLowerCase()}.mp3`} autoPlay/>
+              <div className={styles.alert}>
+                <p>{userAlert.message}</p>
+              </div>
+            </motion.div>
+          )
+        }
       <div>{children}</div>
     </div>
   );
