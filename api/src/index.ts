@@ -5,16 +5,13 @@ import * as uuid from 'uuid'
 import * as dotenv from 'dotenv'
 import { Server } from 'socket.io'
 import precheck from './utils/precheck'
-import authRouter from './routes/auth'
-import friendRouter from './routes/friend'
-import messageRoute from './routes/messages'
-import devRouter from './routes/dev'
+import authRouter from './routes/login'
+import mainRouter from './routes/'
 import { connectedUser, IuserAlertMessage, IMessage } from './types'
 import sessoion from 'express-session'
 import connectRedis from 'connect-redis'
 import prisma from './utils/database'
 import { redisClient } from './utils/redis'
-import authMiddleware from './utils/middleware/auth'
 
 
 
@@ -40,17 +37,15 @@ app.use(sessoion({
 
 //middleware settings
 app.use(Express.json())
-app.use(authMiddleware)
 app.use(cors(
     {
         origin: process.env.NODE_ENV === 'production' ? 'https://www.chat-app.com' : '*',
         credentials: true
     }
 ))
-app.use("/dev", devRouter)
+app.use("/", mainRouter)
 app.use("/auth", authRouter)
-app.use("/friend", friendRouter)
-app.use("/message", messageRoute)
+
 //socket.io
 export const socket = new Server(server, {
     transports: ["websocket"],
@@ -61,7 +56,6 @@ export const socket = new Server(server, {
 });
 
 
-app.get('/', (req, res) => res.send('Hello World!'));
 
 
 //Io server

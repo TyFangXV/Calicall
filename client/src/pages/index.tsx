@@ -12,12 +12,33 @@ import { authContext } from '../utils/context/auth'
 const Home: NextPage = () => {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState<string>("");
+  const {v} = router.query
   const {user} = useContext(authContext);
 
   useEffect(() => {
         //country location
         axios.get(`https://ipapi.co/json`)
           .then(res => setCountryCode(res.data.country_code))
+
+          //check for the encrypted user data and decrypt it
+          if(v)
+          {
+              axios.post(`/api/de?v=${v}`, {
+                  headers: {
+                      "Content-Type": "text/plain",
+                  }
+              }).then(res => {
+                  const {data} = res;
+                  caches.open("D")
+                  .then(cache => {
+                      cache.put("/", new Response(JSON.stringify(data)));
+                      router.push("/app");
+                  }).catch(err => {
+                      console.log(err);
+                  })
+              })
+              .catch(err => console.log(err));
+          }
   }, [])
 
   return (

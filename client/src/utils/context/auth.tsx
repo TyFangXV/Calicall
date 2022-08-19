@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, {Context, createContext, useEffect, useState} from 'react'
 import { IFriendRequest, IUser } from '../types';
 
@@ -22,6 +23,7 @@ export const authContext = createContext({} as AuthContext);
 
 
 const AuthProvider: React.FC<Props> = ({children}) => {
+    const router = useRouter();
     const [user, setUser] = useState<IUser>({
         id: "",
         name: "",
@@ -38,53 +40,65 @@ const AuthProvider: React.FC<Props> = ({children}) => {
 
 
     useEffect(() => {
-    if(!user.signedIn)
-    {
-      (async () => {
-        try {
-            const cachedUserStorage = await caches.keys();
 
-            if (cachedUserStorage.length > 0) 
-            {
-                const cachedUser = await caches.open(cachedUserStorage[0]);
-                const cachedUserData = await cachedUser.match('/');
-                if(cachedUserData)
+        if(!user.signedIn)
+        {
+        (async () => {
+            try {
+                const cachedUserStorage = await caches.keys();
+
+                if (cachedUserStorage.length > 0) 
                 {
-                    const userData = await cachedUserData.json();
-                    setUser({
-                        email : userData.user.email,
-                        id : userData.user.id,
-                        name : userData.user.name,
-                        signedIn : true,
-                    });
+                    const cachedUser = await caches.open(cachedUserStorage[0]);
+                    const cachedUserData = await cachedUser.match('/');
+                    if(cachedUserData)
+                    {
+                        const userData = await cachedUserData.json();
+                        setUser({
+                            email : userData.user.email,
+                            id : userData.user.id,
+                            name : userData.user.name,
+                            signedIn : true,
+                        });
 
-                    axios.post("/api/auth", {
-                        token : userData.token,
-                        userID : userData.user.id
-                    })
-                    .then(res => {
-                        setToken(res.data)
-                    })
+                        console.log(userData);
+                        
+
+                        setTimeout(() => {
+                            axios.post("/api/auth", {
+                                token : userData.token,
+                                userID : userData.user.id
+                            })
+                            .then(res => {
+                                setToken(res.data)
+                            })
+                            .catch(err => console.log(err));
+                        }, 3000)
 
 
-                    const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`, {}, {
-                        headers: {
-                            "Authorization": "Bearer " + userData.token.token
-                        }
-                    });
+                        const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`, {}, {
+                            headers: {
+                                "Authorization": "Bearer " + userData.token.token
+                            }
+                        });
 
-                    setFriends([...Friends]);
+                        setFriends([...Friends]);
 
+                    }
+                    
                 }
-                
+            } catch (error) {
+                setUser({
+                    ...user,
+                    signedIn : false
+                })
+                return null;
             }
-        } catch (error) {
-            return null;
+        })(); 
         }
-      })(); 
-    }
     
-    }, [user, friends]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <authContext.Provider value={{

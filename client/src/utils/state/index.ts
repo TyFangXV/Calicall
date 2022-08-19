@@ -14,16 +14,6 @@ interface IuserAlertMessage {
     onclick?: () => void;
   }
 
-export const UserStateAtom = atom<IUser>({
-    key: "UserState",
-    default: {
-        id: "",
-        name: "",
-        email: "",
-        signedIn: false,
-    }
-})
-
 
 export const UnSeemMessage = atom<IUnseemMessagesDM[]>({
     key: "UnSeemMessage",
