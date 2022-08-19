@@ -1,3 +1,5 @@
+import { Request as ExpressRequest } from 'express';
+
 export interface NotificationProps {
     sender: string
     message: string
@@ -16,6 +18,12 @@ export interface IuserAlertMessage {
     type: string
     to : string
     from : string
+}
+
+
+
+export interface Request extends ExpressRequest {
+  id: string;
 }
 
 

@@ -7,60 +7,18 @@ import styles from '../styles/Home.module.css'
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { decrypt } from "../utils/encryption";
-import { useRecoilState } from 'recoil'
-import { UserStateAtom } from '../utils/state'
-import { IUser } from '../utils/types'
 import { authContext } from '../utils/context/auth'
 
 const Home: NextPage = () => {
   const router = useRouter();
   const [countryCode, setCountryCode] = useState<string>("");
-  const [User, setUser] = useRecoilState<IUser>(UserStateAtom);
   const {user} = useContext(authContext);
 
   useEffect(() => {
-      const {v} = router.query;
-      if (v) 
-      {
-        //decode the token
-          axios.post(`/api/de?v=${v}`, {
-              headers: {
-                  "Content-Type": "text/plain",
-              }
-          }).then(res => {
-              const {data} = res;
-              setUser({
-                email : data.user.email,
-                id : data.user.id,
-                name : data.user.name,
-                signedIn : true,
-              });
-              console.log({
-                email : data.user.email,
-                id : data.user.id,
-                name : data.user.name,
-                signedIn : true,
-              });
-              
-              caches.open("D")
-                      .then(cache => {
-                          cache.put("/", new Response(JSON.stringify(data)));
-                          router.push("/app");
-                      }).catch(err => {
-                          console.log(err);
-                      })
-          })
-          .catch(err => {
-              console.log(err);
-          })
-        }
-
-
-          //country location
-          axios.get(`https://ipapi.co/json`)
-              .then(res => setCountryCode(res.data.country_code))
-  }, [router, setUser])
+        //country location
+        axios.get(`https://ipapi.co/json`)
+          .then(res => setCountryCode(res.data.country_code))
+  }, [])
 
   return (
     <div className={styles.container}>

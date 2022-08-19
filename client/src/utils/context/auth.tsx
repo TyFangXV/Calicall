@@ -6,9 +6,16 @@ interface Props {
     children: React.ReactNode
 }
 
+type Token = {
+    token: string;
+    expiresIn: Date;
+    refreshToken : string;
+}
+
 interface AuthContext {
     user: IUser;
     friends: IFriendRequest[];
+    token: Token
 }
 
 export const authContext = createContext({} as AuthContext);
@@ -23,6 +30,12 @@ const AuthProvider: React.FC<Props> = ({children}) => {
     });
 
     const [friends, setFriends] = useState<IFriendRequest[]>([]);
+    const [token, setToken] = useState<Token>({
+        token: "",
+        expiresIn: new Date(),
+        refreshToken: "",
+    })
+
 
     useEffect(() => {
     if(!user.signedIn)
@@ -45,10 +58,22 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                         signedIn : true,
                     });
 
-                    const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`);
+                    axios.post("/api/auth", {
+                        token : userData.token,
+                        userID : userData.user.id
+                    })
+                    .then(res => {
+                        setToken(res.data)
+                    })
+
+
+                    const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`, {}, {
+                        headers: {
+                            "Authorization": "Bearer " + userData.token.token
+                        }
+                    });
 
                     setFriends([...Friends]);
-                    
 
                 }
                 
@@ -65,6 +90,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         <authContext.Provider value={{
             user,
             friends,
+            token
         }}>
             {children}
         </authContext.Provider>

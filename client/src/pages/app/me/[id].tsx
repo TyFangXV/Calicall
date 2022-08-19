@@ -11,6 +11,7 @@ import { SocketContext } from '../../../utils/context/socketContext';
 import TopBar from '../../../components/sidebar/topbar';
 import ChatInterface from '../../../components/message';
 import axios from 'axios';
+import { useAlert } from '../../../components/alert';
 
 const Chat: NextPage = () => {
   const router = useRouter();
@@ -18,9 +19,10 @@ const Chat: NextPage = () => {
   const { friends } = useContext(authContext);
   const [friend, setFriend] = React.useState<IUser>();
   const [messages, setMessages] = React.useState<IClientMessage[]>([]);
+  const [error, setError] = React.useState<string>('');
   const {sendMessage, socket} = useContext(SocketContext);
-  const {user} = useContext(authContext);
-
+  const {user, token} = useContext(authContext);
+  const alert = useAlert().newAlert;
   let hasFetchedOldMessages = false;
   const setHasFetchedOldMessages = () => hasFetchedOldMessages = true;
 
@@ -32,6 +34,8 @@ const Chat: NextPage = () => {
   }, [friends, id, router]);
 
   useEffect(() => {
+    console.log(error);
+    
     if(!hasFetchedOldMessages)
     {
       (async() => {
@@ -41,6 +45,11 @@ const Chat: NextPage = () => {
           const {data:msg} = await axios.post('/api/message/get', {
             me: user.id,
             friend: id,
+          }, {
+            headers : {
+              "Content-Type" : "application/json",
+              "Authorization" : "Bearer " + token.token
+          }
           })   
           
           //check if the message is already stored in the state
@@ -51,7 +60,12 @@ const Chat: NextPage = () => {
           }
           setHasFetchedOldMessages();
         } catch (error) {
-          console.log(error);
+          alert(
+            "Cannot fetch old messages",
+            undefined,
+            "ERROR"
+          )
+          setError("Could not fetch old messages...Please try again later");
           setHasFetchedOldMessages();
         }
 
@@ -87,7 +101,13 @@ const Chat: NextPage = () => {
           }
 
         </div>
-        <ChatInterface Messages={messages} Friend={friend as IUser}/>
+        {
+          error === '' ? (
+            <ChatInterface Messages={messages} Friend={friend as IUser}/>
+            ) : (
+              <div>{error}</div>
+            )
+        }
         <div>
           <Input
             name={friend?.name as string}

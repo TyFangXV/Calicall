@@ -17,7 +17,7 @@ const Friend:React.FC = () => {
     const {socket} = useContext(SocketContext);
     const friendDivRef = React.useRef<HTMLDivElement>(null);
     const friendRef = React.useRef<HTMLInputElement>(null);
-    const {user, friends} = useContext(authContext);
+    const {user, friends, token} = useContext(authContext);
     const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([...friends]);
     const router = useRouter();
 
@@ -54,7 +54,8 @@ const Friend:React.FC = () => {
                     me : user.id
             }, {
                 headers : {
-                    "Content-Type" : "application/json" 
+                    "Content-Type" : "application/json",
+                    "Authorization" : "Bearer " + token.token
                 }
             })
                 getFriends()
@@ -89,7 +90,8 @@ const Friend:React.FC = () => {
                                 id : id
                             }, {
                                 headers : {
-                                    "Content-Type" : "application/json" 
+                                    "Content-Type" : "application/json",
+                                    "Authorization" : "Bearer " + token.token
                                 }
                             })
                         case false:
@@ -99,7 +101,8 @@ const Friend:React.FC = () => {
                                 id : id
                             }, {
                                 headers : {
-                                    "Content-Type" : "application/json" 
+                                    "Content-Type" : "application/json",
+                                    "Authorization" : "Bearer " + token.token
                                 }
                             })    
                     }
@@ -120,7 +123,12 @@ const Friend:React.FC = () => {
 
     const getFriends = async() => {
         try {
-            const {data} = await axios.get(`/api/friend/me?me=${user.id}`);
+            const {data} = await axios.get(`/api/friend/me?me=${user.id}`, {
+                headers : {
+                    "Content-Type" : "application/json",
+                    "Authorization" : "Bearer " + token.token
+                }
+            });
             
             return data;
         } catch (error) {
@@ -216,6 +224,9 @@ const Friend:React.FC = () => {
             <div>
                 <Input/>
                 <Breaker/>
+            </div>
+            <div>
+                <FriendList/>
             </div>
         </div>
     )

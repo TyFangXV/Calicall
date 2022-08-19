@@ -9,13 +9,16 @@ export default async function handler(
 ) {
     const {me:userID, friend:senderID} = req.body;
 
-    
     if(senderID && userID)
     {
         try {
             const {data} = await axios.post("http://localhost:5000/message/get", {
                 userID,
                 senderID
+            }, {
+                headers: {
+                    authorization : req.headers.authorization as string
+                }
             })
 
             res.status(200).send(data);

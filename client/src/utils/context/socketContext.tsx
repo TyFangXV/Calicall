@@ -3,7 +3,6 @@ import React, {Context, useState, useEffect, useRef, createContext} from 'react'
 import {io, Socket} from 'socket.io-client'
 import Peer, { SimplePeer } from 'simple-peer'
 import { RecoilRoot, useRecoilValue } from 'recoil'
-import { UserStateAtom } from '../state'
 import AuthProvider from './auth'
 import { IMessage, IuserAlertMessage } from '../types'
 
@@ -55,8 +54,6 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     const [callEnded, setCallEnded] = useState<boolean>(false);
     const [call, setCall] = useState<CallProps>();
 
-    //recoil 
-    const {signedIn:UserSignInStatus, id} = useRecoilValue(UserStateAtom);
     const UserVideo = useRef<HTMLVideoElement>(null);
     const localUserVideo = useRef<HTMLVideoElement>(null);
     const connectionRef = useRef<any>();
