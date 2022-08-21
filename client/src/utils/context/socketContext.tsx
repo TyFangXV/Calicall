@@ -4,7 +4,7 @@ import {io, Socket} from 'socket.io-client'
 import Peer, { SimplePeer } from 'simple-peer'
 import { RecoilRoot, useRecoilValue } from 'recoil'
 import AuthProvider from './auth'
-import { IMessage, IuserAlertMessage } from '../types'
+import { ICallUser, IMessage, IuserAlertMessage } from '../types'
 
 interface Props {
     children: React.ReactNode
@@ -52,7 +52,7 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     const [localUser, setLocalUser] = useState<string>("");
     const [callAccepted, setCallAccepted] = useState<boolean>(false);
     const [callEnded, setCallEnded] = useState<boolean>(false);
-    const [call, setCall] = useState<CallProps>();
+    const [call, setCall] = useState<ICallUser>();
 
     const UserVideo = useRef<HTMLVideoElement>(null);
     const localUserVideo = useRef<HTMLVideoElement>(null);
@@ -69,6 +69,12 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
         })
     }
 
+    useEffect(() => {
+        socket.on("CallUser", (data:ICallUser) => {
+            setCall(data)
+        })
+    }, [])
+
     const listenUserSystemAlert = (onRecieve:(data:IuserAlertMessage) => void) => {
         socket.on("userSystemAlertRecieve", (data) => {
             onRecieve(data)
@@ -80,6 +86,18 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     }
 
     const answerCall = () => {
+        setCallAccepted(true);
+
+        const peer =  new Peer({
+            initiator: true,
+            stream: stream,
+            trickle: false,
+
+        })
+
+        peer.on("signal", (data) => {
+            socket.emit("answerCall", )
+        })
     };
 
     const callUser = (userId:string) => {

@@ -33,3 +33,16 @@ export interface IMessage {
     message: string;
     type: "TEXT" | "GIF"
 }
+
+export interface DMCallData {
+    from: string;
+    to: string;
+    id : string;
+
+}
+
+export interface ICallUser{
+    me : string,
+    to : string,
+    signal : string,
+}

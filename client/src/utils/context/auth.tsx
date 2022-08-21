@@ -61,10 +61,10 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                             signedIn : true,
                         });
 
-                        console.log(userData);
                         
 
-                        setTimeout(() => {
+                        setTimeout(async() => {
+                            //check if the token is expired
                             axios.post("/api/auth", {
                                 token : userData.token,
                                 userID : userData.user.id
@@ -78,7 +78,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
 
                         const {data:Friends} = await axios.post(`/api/friend/me?me=${userData.user.id}`, {}, {
                             headers: {
-                                "Authorization": "Bearer " + userData.token.token
+                                "Authorization": "Bearer " + `${userData.token.token}.${userData.user.id}`
                             }
                         });
 

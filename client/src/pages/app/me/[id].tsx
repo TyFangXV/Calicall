@@ -29,7 +29,12 @@ const Chat: NextPage = () => {
   useEffect(() => {
     if (id) {
       const friend = friends.find((friend) => friend.receiver?.id === id);
-      setFriend(friend?.receiver);
+      if(friend) 
+      {
+        setFriend(friend.receiver);
+      }else{
+        router.push('/app/me');
+      }
     }
   }, [friends, id, router]);
 
@@ -48,7 +53,7 @@ const Chat: NextPage = () => {
           }, {
             headers : {
               "Content-Type" : "application/json",
-              "Authorization" : "Bearer " + token.token
+              "Authorization" : "Bearer " + `${token.token}.${user.id}`
           }
           })   
           

@@ -16,6 +16,10 @@ export default async function handler(
                 senderID,
                 receiverID,
                 id
+            },{
+                headers: {
+                    authorization : req.headers.authorization as string
+                }
             })
 
             res.status(200).send(data);

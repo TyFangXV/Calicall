@@ -49,6 +49,8 @@ authRouter.post("/tokenValidation" , async(req, res) => {
           res.status(200).send(token);
         }
 
+      }else{
+        res.status(400).send("Token not found");
       }
     }
 

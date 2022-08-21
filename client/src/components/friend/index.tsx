@@ -1,33 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
-import Ripple from "../ripple";
-import {FaUserFriends} from 'react-icons/fa';
 import styles from './styles.module.css';
 import axios from "axios";
 import { authContext } from "../../utils/context/auth";
-import * as uuid from 'uuid';
-import { IFriendRequest, IuserAlertMessage } from "../../utils/types";
-import { MdCancel, MdCircleNotifications, MdDone } from "react-icons/md";
-import {AiOutlineMessage} from 'react-icons/ai';
-import {BsClockFill} from 'react-icons/bs'
+import { IFriendRequest } from "../../utils/types";
 import { SocketContext } from "../../utils/context/socketContext";
-import { useRouter } from "next/router";
+import * as uuid from 'uuid'
+import Accept_Tab from "./cards/Accept_tab";
+import Invite_Tab from "./cards/invite_tab";
 
 const Friend:React.FC = () => {
-    const [openFriend, setOpenFriend] = React.useState(false);
     const {socket} = useContext(SocketContext);
     const friendDivRef = React.useRef<HTMLDivElement>(null);
     const friendRef = React.useRef<HTMLInputElement>(null);
     const {user, friends, token} = useContext(authContext);
     const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([...friends]);
-    const router = useRouter();
 
-    useEffect(() => {
-        window.addEventListener("click", (e) => {
-            if (friendDivRef.current && !friendDivRef.current.contains(e.target as Node)) {
-                setOpenFriend(false);
-            }
-        })
-        
+    useEffect(() => {        
         socket.on("userSystemAlert", (data:any) => {
             if(data.message.type === "FRIEND_REQUEST_UI_UPDATE")
             {
@@ -42,6 +30,14 @@ const Friend:React.FC = () => {
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, socket])
+    
+
+    //check if the user's friend is online
+    const isOnline = (id:string) => {
+        socket.on("isOnline", data => {
+
+        });
+    }
 
 
 
@@ -55,7 +51,7 @@ const Friend:React.FC = () => {
             }, {
                 headers : {
                     "Content-Type" : "application/json",
-                    "Authorization" : "Bearer " + token.token
+                    "Authorization" : "Bearer " + `${token.token}.${user.id}`
                 }
             })
                 getFriends()
@@ -76,57 +72,14 @@ const Friend:React.FC = () => {
     }
 
 
-    const accept_decline = async(receiverID:string, status:boolean, id:string) => {
-        try {
-            if(friendRequest.length > 0)
-            {
-                try {
-                    switch(status)
-                    {
-                        case true:
-                            await axios.post(`/api/friend/accept`, {
-                                friend : receiverID,
-                                me : user.id,
-                                id : id
-                            }, {
-                                headers : {
-                                    "Content-Type" : "application/json",
-                                    "Authorization" : "Bearer " + token.token
-                                }
-                            })
-                        case false:
-                            await axios.post(`/api/friend/reject`, {
-                                friend : receiverID,
-                                me : user.id,
-                                id : id
-                            }, {
-                                headers : {
-                                    "Content-Type" : "application/json",
-                                    "Authorization" : "Bearer " + token.token
-                                }
-                            })    
-                    }
-                    return null;
-                } catch (error) {
-                    console.log(error);
-                    return null;
-                }            
-            }else{
-                return null;
-            }            
-        } catch (error) {
-            console.log(error);
-            return null;   
-        }
 
-    }
 
     const getFriends = async() => {
         try {
             const {data} = await axios.get(`/api/friend/me?me=${user.id}`, {
                 headers : {
                     "Content-Type" : "application/json",
-                    "Authorization" : "Bearer " + token.token
+                    "Authorization" : "Bearer " + `${token.token}.${user.id}`
                 }
             });
             
@@ -147,14 +100,7 @@ const Friend:React.FC = () => {
         )
     }
 
-    const Breaker:React.FC = () => {
-        return (
-            <div>
-                <hr className={styles.breaker}/>
-            </div>
-        )
 
-    }
 
     const FriendList:React.FC = () => {
         return (
@@ -171,41 +117,22 @@ const Friend:React.FC = () => {
                                 switch(friend.status)
                                 {
                                     case "PENDING":
-                                        return (
-                                        <div key={uuid.v4()} className={styles.frq_card}>
-                                          <p className={styles.friendName}>@{friend.receiver?.name}</p>
-                                                {
-                                                    friend.senderId === user.id ? (
-                                                        <div className={styles.Inputs}>
-                                                            <button className={styles.btn} style={{backgroundColor : "#eed202 "}}>
-                                                                <BsClockFill/>
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <div className={styles.Inputs}>
-                                                            <button className={styles.btn} style={{backgroundColor : "green"}} onClick={async() => await accept_decline(friend.receiverId, true, friend.id)}>
-                                                                <MdDone/>
-                                                            </button>
-                                                            <button className={styles.btn} style={{backgroundColor : "red"}} onClick={async() => await accept_decline(friend.receiverId, false, friend.id)}>
-                                                                <MdCircleNotifications/>
-                                                            </button>
-                                                        </div>
-                                                    )
-                                                }
-                                        </div>
-                                    )
+                                        return <Invite_Tab 
+                                            friend={friend}
+                                            key={uuid.v4()}
+                                            friendRequest={friendRequest}
+                                        />
 
                                     case "ACCEPTED":
-                                        return(
-                                        <div key={uuid.v4()} className={styles.frq_card}>
-                                            <p className={styles.friendName}>@{friend.receiver?.name}</p>
-                                                <div className={styles.Inputs}>
-                                                    <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
-                                                        <AiOutlineMessage/>
-                                                    </button>
-                                                </div>
-                                        </div>
-                                        )
+                                        return <Accept_Tab
+                                         senderId={friend.senderId} 
+                                         receiverId={friend.receiverId} 
+                                         status={friend.status} 
+                                         id={friend.id} 
+                                         key={uuid.v4()}
+                                         receiver={friend.receiver}
+                                         accepted={true}
+                                        />
                                 }
                             })
                         }
@@ -223,10 +150,10 @@ const Friend:React.FC = () => {
         <div ref={friendDivRef} className={styles.container}>
             <div>
                 <Input/>
-                <Breaker/>
-            </div>
-            <div>
-                <FriendList/>
+                <hr className={styles.breaker}/>    
+                <div className={styles.friendsLst}>
+                    <FriendList/>
+                </div>
             </div>
         </div>
     )

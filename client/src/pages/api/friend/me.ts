@@ -15,10 +15,16 @@ export default async function handler(
         try {
             const {data} = await axios.post("http://localhost:5000/friend/getRequest", {
                 userID
+            }, {
+                headers: {
+                    authorization : req.headers.authorization as string
+                }
             })
 
             res.status(200).send(data);
-        } catch (error) {   
+        } catch (error) {     
+            console.log(error);
+            
             res.status(400).send(error);
         }        
     }

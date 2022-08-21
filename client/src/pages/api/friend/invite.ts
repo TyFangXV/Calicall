@@ -19,6 +19,10 @@ export default async function handler(
             const {data} = await axios.post("http://localhost:5000/friend/invite", {
                 senderID,
                 receiverID
+            },{
+                headers: {
+                    authorization : req.headers.authorization as string
+                }
             })
 
             res.status(200).send(data);

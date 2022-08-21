@@ -5,14 +5,15 @@ import * as uuid from 'uuid'
 import * as dotenv from 'dotenv'
 import { Server } from 'socket.io'
 import precheck from './utils/precheck'
+import devRouter from './routes/dev'
 import authRouter from './routes/login'
 import mainRouter from './routes/'
-import { connectedUser, IuserAlertMessage, IMessage } from './types'
+import { connectedUser, IuserAlertMessage, IMessage, ICallUser } from './types'
 import sessoion from 'express-session'
 import connectRedis from 'connect-redis'
 import prisma from './utils/database'
 import { redisClient } from './utils/redis'
-
+import {ExpressPeerServer} from 'peer'
 
 
 
@@ -35,6 +36,14 @@ app.use(sessoion({
     }
 }))
 
+//peer server
+const peerServer = ExpressPeerServer(server, {
+    proxied: true,
+    path: '/peer',
+});
+
+
+
 //middleware settings
 app.use(Express.json())
 app.use(cors(
@@ -43,8 +52,9 @@ app.use(cors(
         credentials: true
     }
 ))
-app.use("/", mainRouter)
 app.use("/auth", authRouter)
+app.use("/dev", devRouter)
+app.use("/", mainRouter)
 
 //socket.io
 export const socket = new Server(server, {
@@ -133,13 +143,29 @@ socket.on("connection", (IS) => {
         }
     })
 
+    //call user
+	IS.on("callUser", (data:ICallUser) => {
+        const recieverID = getUserConnectionID(data.to);
+        const senderID = getUserConnectionID(data.me);
+        if(recieverID)
+        {
+            
+        }
+		socket.to(recieverID).emit("callUser", { signal: signalData, from, name });
+	});
+
+	IS.on("answerCall", (data) => {
+		socket.to(data.to).emit("callAccepted", data.signal)
+	});
+
     IS.on("disconnect", () => {
         console.log(`${IS.id} has disconnected`);
+        socket.emit("userLeft", connectedUser.find(user => user.connectedID === IS.id)?.userId);
         connectedUser.splice(connectedUser.findIndex(user => user.connectedID === IS.id), 1);
-
     })
 
 })
+
 
 
 

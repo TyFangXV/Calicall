@@ -16,6 +16,7 @@ const Home: NextPage = () => {
   const {user} = useContext(authContext);
 
   useEffect(() => {
+    console.log(v)
         //country location
         axios.get(`https://ipapi.co/json`)
           .then(res => setCountryCode(res.data.country_code))
@@ -39,7 +40,7 @@ const Home: NextPage = () => {
               })
               .catch(err => console.log(err));
           }
-  }, [])
+  }, [v])
 
   return (
     <div className={styles.container}>

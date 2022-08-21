@@ -2,9 +2,9 @@ import {Request, Response, NextFunction } from 'express';
 import prisma from '../database';
 import {redisClient} from '../redis'
 
+const tokenValidator = async(token:string, id:string) => {
+    const cachedToken = await  redisClient.get(id);
 
-const tokenValidator = async(token:string) => {
-    const cachedToken = await  redisClient.get("token");
     if(cachedToken)
     {
         const token = JSON.parse(cachedToken);
@@ -21,6 +21,8 @@ const tokenValidator = async(token:string) => {
 
     if(!cachedToken)
     {
+        console.log(token);
+        
         //check if the token is valid in the database
         const tk = await prisma.token.findUnique({
             where: {
@@ -42,7 +44,7 @@ const tokenValidator = async(token:string) => {
             {  
                 return false;
             }else{
-                redisClient.set("token", JSON.stringify(tk));
+                redisClient.set(tk.id , JSON.stringify(tk));
                 return true;
             }
         }
@@ -78,8 +80,9 @@ const authMiddleware = async(req: Request, res: Response, next: NextFunction) =>
         if(token)
         {
             try {
-                const isValid = await tokenValidator(token.split(" ")[1]);
-                console.log(isValid);
+                const giveToken = token.split(" ")[1]
+                const isValid = await tokenValidator(giveToken.split(".")[0], giveToken.split(".")[1])
+
                 
                 if(isValid)
                 {  
