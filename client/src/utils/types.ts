@@ -3,6 +3,7 @@ export interface IUser {
     name: string;
     email: string;
     signedIn: boolean;
+    profile_pic: string;
 }
 
 export interface INotificationProps {
@@ -50,4 +51,11 @@ export interface IClientMessage {
 export interface DMMessageType {
     User:IUser,
     Message:IClientMessage
+}
+
+
+export interface ICallUser{
+    me : string,
+    to : string,
+    signal : string,
 }

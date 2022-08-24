@@ -4,12 +4,14 @@ import * as uuid from "uuid";
 export class UserDataHandler{
     email:string;
     id:string;
+    profile_pic:string;
     location:string;
     username:string;
 
-    constructor(email:string, id:string, username:string, location:string)
+    constructor(email:string, id:string, username:string, location:string, profile_pic:string)
     {
         this.email = email;
+        this.profile_pic = profile_pic;
         this.id = id;
         this.username = username;
         this.location = location;
@@ -44,6 +46,7 @@ export class UserDataHandler{
                 data: {
                     email: this.email,
                     id: this.id,
+                    profile_pic : this.profile_pic || "https://i.pinimg.com/280x280_RS/37/77/3f/37773f14fac74cdeff6c00e3b8d79ec7.jpg",
                     name: this.username,
                     created_at : new Date(),
                     location: this.location,

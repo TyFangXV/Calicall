@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {Context, useState, useEffect, useRef, createContext} from 'react'
+import React, {Context, useState, useEffect, useRef, createContext, useContext} from 'react'
 import {io, Socket} from 'socket.io-client'
 import Peer, { SimplePeer } from 'simple-peer'
 import { RecoilRoot, useRecoilValue } from 'recoil'
-import AuthProvider from './auth'
+import AuthProvider, { authContext } from './auth'
 import { ICallUser, IMessage, IuserAlertMessage } from '../types'
 
 interface Props {
@@ -28,9 +28,9 @@ type ContextType = {
     setLocalUser : (name:string) => void;
     answerCall : () => void;
     leaveCall : () => void;
-    callUser : (userId:string) => void;
+    callUser : (userId:string, friendID:string) => void;
     connectUser : (userId:string) => void;
-    startCamera : () => void;
+    startCamera : (camera:boolean, audio:boolean) => void;
     sendMessage : (message:IMessage) => void;
     sendNotification : (notification:NotificationProps) => void;
     listenUserSystemAlert : (onRecieve:(data:IuserAlertMessage) => void) => void;
@@ -58,8 +58,8 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     const localUserVideo = useRef<HTMLVideoElement>(null);
     const connectionRef = useRef<any>();
 
-    const startCamera = () => {
-        navigator.mediaDevices.getUserMedia({video: true, audio: true})
+    const startCamera = (camera:boolean, audio:boolean) => {
+        navigator.mediaDevices.getUserMedia({video: camera, audio: audio})
         .then(stream => {
             setStream(stream)
             if(localUserVideo.current)
@@ -67,11 +67,21 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
                 localUserVideo.current.srcObject = stream
             } 
         })
+        .catch(err => {
+            if(err.name == "TypeError")
+            {
+                return null;
+            }else{
+                console.log(err)
+            }
+        })
     }
 
     useEffect(() => {
         socket.on("CallUser", (data:ICallUser) => {
             setCall(data)
+            console.log("call recivieds");
+            
         })
     }, [])
 
@@ -89,19 +99,42 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
         setCallAccepted(true);
 
         const peer =  new Peer({
-            initiator: true,
+            initiator: false,
             stream: stream,
             trickle: false,
 
         })
 
-        peer.on("signal", (data) => {
-            socket.emit("answerCall", )
+        peer.on("signal", (data:ICallUser) => {
+            socket.emit("answerCall", data)   
         })
+
+        peer.on("stream", (stream:MediaStream) => {
+            if(UserVideo.current)
+            {
+                UserVideo.current.srcObject = stream
+            }
+        })
+
+        if(call?.signal)
+        {
+            peer.signal(call.signal);
+        }else{
+            console.log("No call")
+        }
+
+        connectionRef.current = peer;
     };
 
-    const callUser = (userId:string) => {
+    const callUser = (userId:string, friendID:string) => {
 
+        const data:ICallUser = {
+            to : friendID,
+            me : userId,
+            signal : "XXS"
+        }
+
+        socket.emit("callUser", data) 
     };
 
     const leaveCall = () => {
@@ -128,12 +161,12 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
                 call,
                 callAccepted,
                 callEnded,
+                startCamera,
                 UserVideo,
                 stream,
                 localUserVideo,
                 answerCall,
                 setLocalUser,
-                startCamera,
                 connectUser,
                 leaveCall,
                 callUser,

@@ -28,6 +28,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         id: "",
         name: "",
         email: "",
+        profile_pic : "",
         signedIn: false,
     });
 
@@ -58,6 +59,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                             email : userData.user.email,
                             id : userData.user.id,
                             name : userData.user.name,
+                            profile_pic : userData.user.profile_pic,
                             signedIn : true,
                         });
 

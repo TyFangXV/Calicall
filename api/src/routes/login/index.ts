@@ -43,7 +43,8 @@ authRouter.post("/tokenValidation" , async(req, res) => {
             user?.email as string,
             user?.id as string,
             user?.name as string,
-            user?.location as string
+            user?.location as string,
+            user?.profile_pic as string
           ).generateAuthToken(userID);
 
           res.status(200).send(token);

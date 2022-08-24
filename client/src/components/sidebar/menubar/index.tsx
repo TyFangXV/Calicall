@@ -15,7 +15,7 @@ const FriendButton: React.FC<IUser> = (data) => {
     <div className={styles.FriendContainer} onClick={() => router.push(`/app/me/${data.id}`)}>
       <div style={{display: "flex", alignItems : "center"}}>
         <img
-          src={'https://xsgames.co/randomusers/avatar.php?g=pixel'}
+          src={data.profile_pic.startsWith("https://") ? data.profile_pic : `https://cdn.discordapp.com/avatars/${data.id}/${data.profile_pic}`}
           alt="image"
           className={styles.pfp}
         />
@@ -52,6 +52,7 @@ const SideMenuBar: React.FC = () => {
                   name={friend.receiver?.name as string}
                   email={friend.receiver?.email as string}
                   id={friend.receiver?.id as string}
+                  profile_pic={friend.receiver?.profile_pic as string}
                   signedIn={true}
                 />
               </div>

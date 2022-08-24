@@ -4,16 +4,19 @@ import {BsPersonCircle} from 'react-icons/bs';
 import Circle from "./circle";
 import { useRouter } from "next/router";
 import { SocketContext } from "../../utils/context/socketContext";
-import { useRecoilState } from "recoil";
-import { UnSeemMessage } from "../../utils/state";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { DMcallLogger, UnSeemMessage } from "../../utils/state";
 import { useAlert } from "../alert";
 import { authContext } from "../../utils/context/auth";
+import { ICallUser, IUser } from "../../utils/types";
 
 const SideBar:React.FC = () => {
   const router = useRouter();
   const {socket} = useContext(SocketContext);
   const [Notif, setNotif] = useRecoilState(UnSeemMessage);
   const {friends} = useContext(authContext)
+  const [dmCallLogger, setDMcallLogger] = useRecoilState(DMcallLogger);
+  const resetDmCallerLog = useResetRecoilState(DMcallLogger);
   const {newAlert} = useAlert();
 
   const handleClick = () => {
@@ -23,6 +26,8 @@ const SideBar:React.FC = () => {
       router.push("/app/me");
     }
   }
+
+
 
   useEffect(() => {
     socket.on("userSystemAlertRecieve", (data:any) => {    
@@ -37,6 +42,25 @@ const SideBar:React.FC = () => {
         );
       }
     })
+
+    socket.on("callFromFriend", (data:ICallUser) => {
+      if(!dmCallLogger.isCalling)
+      {
+        setDMcallLogger({
+          user : friends.find(f => data.me === f.senderId)?.receiver as IUser,
+          isCalling : true,
+          isLocalUserCalling : false
+        })
+
+        newAlert(`Call from ${friends.find(f => data.me === f.senderId)?.receiver?.name}`, () =>  router.push(`/app/me/${data.me}`) , "RINGTONE")
+        console.log(dmCallLogger);
+        
+        setTimeout(() => {
+          resetDmCallerLog()
+        }, 30000)        
+      }
+  })
+
   }, [newAlert, socket])
 
   return(

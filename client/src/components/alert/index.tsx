@@ -12,20 +12,18 @@ interface IProps {
 }
 
 interface IuserAlertMessage {
-  type : "INFO" | "WARNING" | "ERROR"
+  type : "INFO" | "WARNING" | "ERROR" | "RINGTONE"
   id: string;
   message: string;
   onclick?: () => void;
 }
 
-type Type = {
-  type: "INFO" | "WARNING" | "ERROR"
-}
+
 
 export const useAlert = () => {
   const [userAlert, setUserAlert] = useRecoilState(UserAlertAtom);
 
-  const newAlert = (message: string, onClick?: () => void, type?:"INFO" | "WARNING" | "ERROR") => {
+  const newAlert = (message: string, onClick?: () => void, type?:"INFO" | "WARNING" | "ERROR" | "RINGTONE") => {
     setUserAlert({
       id: uuid.v4(),
       message,
@@ -45,7 +43,7 @@ const AlertContainer: React.FC<IProps> = ({ children, AlertMessage }) => {
         {
             setTimeout(() => {
                 reset();
-            }, 3000);    
+            }, AlertMessage.type !== "RINGTONE" ? 3000 : 30000);    
         }
     })
 

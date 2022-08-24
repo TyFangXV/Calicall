@@ -8,12 +8,18 @@ interface IUnseemMessagesDM {
 }
 
 interface IuserAlertMessage {
-    type : "INFO" | "WARNING" | "ERROR"
+    type : "INFO" | "WARNING" | "ERROR" | "RINGTONE"
     id: string;
     message: string;
     onclick?: () => void;
   }
 
+
+interface IDMcallLogger {
+    user : IUser,
+    isCalling:boolean,
+    isLocalUserCalling:boolean
+}
 
 export const UnSeemMessage = atom<IUnseemMessagesDM[]>({
     key: "UnSeemMessage",
@@ -32,5 +38,14 @@ export const UserAlertAtom = atom<IuserAlertMessage>({
         type: "INFO",
         id : "",
         onclick : () => {},
+    }
+})
+
+export const DMcallLogger = atom<IDMcallLogger>({
+    key : "DMcallLogger",
+    default : {
+        user : {} as IUser,
+        isCalling : false,
+        isLocalUserCalling : false
     }
 })

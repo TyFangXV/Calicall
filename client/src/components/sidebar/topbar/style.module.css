@@ -37,11 +37,12 @@
 
 .callPopup{
     position: absolute;
-    width: 80vw;
+    min-width: 80vw;
+    max-width: 80vw;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    height: 25vh;
+    height: 30vh;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     background-color: var(--secondary-color);
@@ -49,9 +50,34 @@
 
 
 .userVideo{
-    width: 190px;
-    height: 190px;
+    margin-top: 1vh;
+    width: 145px;
+    height: 150px;
     border-radius: 50%;
     background-color: var(--secondary-color-light);
     object-fit: cover;
+}
+
+
+.controlBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1vh;
+}
+.ctrl_btn{
+    background:none;
+    background-color: var(--secondary-color-light);
+    border: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px 25px 10px 25px;
+    border-radius: 10px;
+    color: var(--primary-color-mid);
+    cursor: pointer;
+}
+
+.ctrl_btn:hover{
+    color: var(--primary-color-light);
+    border: 1px solid white;
 }

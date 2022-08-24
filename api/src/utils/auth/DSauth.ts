@@ -55,7 +55,8 @@ class DiscordAuth {
                     UserData.email,
                     UserData.id,
                     UserData.username,
-                    state
+                    state,
+                    UserData.avatar
                 )
 
                 //save user data and return the auth token

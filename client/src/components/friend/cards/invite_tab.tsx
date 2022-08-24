@@ -18,16 +18,6 @@ const Invite_Tab:React.FC<Invite_Tab> = ({friend, friendRequest}) => {
     const {user, friends, token} = useContext(authContext);
     const {socket} = useContext(SocketContext);
 
-    useEffect(() => {
-        socket.on("userLeft", (data:any) => {
-            console.log(data);
-        })
-
-        socket.on("userJoined", (data:any) => {
-            console.log(data);
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []) 
 
     const accept_decline = async(receiverID:string, status:boolean, id:string) => {
         try {
@@ -44,7 +34,7 @@ const Invite_Tab:React.FC<Invite_Tab> = ({friend, friendRequest}) => {
                             }, {
                                 headers : {
                                     "Content-Type" : "application/json",
-                                    "Authorization" : "Bearer " + token.token
+                                    "Authorization" : "Bearer " +  `${token.token}.${user.id}`
                                 }
                             })
                         case false:
@@ -55,7 +45,7 @@ const Invite_Tab:React.FC<Invite_Tab> = ({friend, friendRequest}) => {
                             }, {
                                 headers : {
                                     "Content-Type" : "application/json",
-                                    "Authorization" : "Bearer " + token.token
+                                    "Authorization" : "Bearer " +  `${token.token}.${user.id}`
                                 }
                             })    
                     }

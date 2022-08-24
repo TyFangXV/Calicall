@@ -22,19 +22,6 @@ const app = Express()
 const server = http.createServer(app);
 const RedisStore = connectRedis(sessoion);
 
-app.use(sessoion({
-    store : new RedisStore({
-       client: redisClient
-    }),
-    secret: process.env.SESSION_SECRET as string,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true
-    }
-}))
 
 //peer server
 const peerServer = ExpressPeerServer(server, {
@@ -149,13 +136,19 @@ socket.on("connection", (IS) => {
         const senderID = getUserConnectionID(data.me);
         if(recieverID)
         {
-            
+            console.log("Send call");
+            socket.to(recieverID).emit("callFromFriend", data);
+        }else{
+            console.log("User not found in online chat")
         }
-		socket.to(recieverID).emit("callUser", { signal: signalData, from, name });
 	});
 
 	IS.on("answerCall", (data) => {
-		socket.to(data.to).emit("callAccepted", data.signal)
+        const recieverID = getUserConnectionID(data.to);
+        if(recieverID)
+        {
+            socket.to(recieverID).emit("callAccepted", data.signal);
+        }
 	});
 
     IS.on("disconnect", () => {
