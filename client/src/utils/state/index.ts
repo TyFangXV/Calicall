@@ -19,6 +19,7 @@ interface IDMcallLogger {
     user : IUser,
     isCalling:boolean,
     isLocalUserCalling:boolean
+    callAccepted:boolean
 }
 
 export const UnSeemMessage = atom<IUnseemMessagesDM[]>({
@@ -46,6 +47,7 @@ export const DMcallLogger = atom<IDMcallLogger>({
     default : {
         user : {} as IUser,
         isCalling : false,
-        isLocalUserCalling : false
+        isLocalUserCalling : false,
+        callAccepted : false
     }
 })

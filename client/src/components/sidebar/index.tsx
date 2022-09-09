@@ -47,17 +47,17 @@ const SideBar:React.FC = () => {
       if(!dmCallLogger.isCalling)
       {
         setDMcallLogger({
-          user : friends.find(f => data.me === f.senderId)?.receiver as IUser,
+          user : friends.find(f => data.me === f.senderId || data.me === f.receiverId)?.receiver as IUser,
           isCalling : true,
-          isLocalUserCalling : false
+          isLocalUserCalling : false,
+          callAccepted : false
         })
 
-        newAlert(`Call from ${friends.find(f => data.me === f.senderId)?.receiver?.name}`, () =>  router.push(`/app/me/${data.me}`) , "RINGTONE")
-        console.log(dmCallLogger);
-        
+        newAlert(`Call from ${friends.find(f => data.me === f.senderId || data.me === f.receiverId)?.receiver?.name}`, () =>  router.push(`/app/me/${data.me}`) , "RINGTONE")
+                
         setTimeout(() => {
           resetDmCallerLog()
-        }, 30000)        
+        }, 15000)        
       }
   })
 

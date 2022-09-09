@@ -43,7 +43,7 @@ const AlertContainer: React.FC<IProps> = ({ children, AlertMessage }) => {
         {
             setTimeout(() => {
                 reset();
-            }, AlertMessage.type !== "RINGTONE" ? 3000 : 30000);    
+            }, AlertMessage.type !== "RINGTONE" ? 3000 : 15000);    
         }
     })
 

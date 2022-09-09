@@ -136,7 +136,6 @@ socket.on("connection", (IS) => {
         const senderID = getUserConnectionID(data.me);
         if(recieverID)
         {
-            console.log("Send call");
             socket.to(recieverID).emit("callFromFriend", data);
         }else{
             console.log("User not found in online chat")

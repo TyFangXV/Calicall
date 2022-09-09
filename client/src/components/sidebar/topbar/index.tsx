@@ -9,26 +9,35 @@ import CallPrompt from "./call";
 import styles from './style.module.css';
 
 const TopBar:React.FC<{User:IUser}> = ({User}) => {
-    const {callUser} = useContext(SocketContext);
+    const {callUser, stopBothVideoAndAudio, stream} = useContext(SocketContext);
     const [viewModel, setViewModel] = useState(false);
     const [dmCallLogger, setDMcallLogger] = useRecoilState(DMcallLogger);
     const resetDmCallLooger = useResetRecoilState(DMcallLogger)
     const {user, friends} = useContext(authContext)
     
-
+    /*
+        Call the User
+        View the DM_CALL model
+        Handle the timing of when to close the call
+    */
     const handleClick = () => {
         setViewModel(true)
         callUser(user.id, User.id)
         setDMcallLogger({
             isLocalUserCalling : true,
+            callAccepted : false,
             isCalling : false,
             user : friends.find(f => f.receiver?.id === User.id)?.receiver as IUser
         })
         setTimeout(() => {
-            setViewModel(false)
-            resetDmCallLooger()
-        } , 30000)
+            if(!dmCallLogger.callAccepted)
+            {
+                setViewModel(false)
+                resetDmCallLooger()
+            }
+        } , 15000)
     }
+
     return (
         <div>
             <div className={styles.container}>

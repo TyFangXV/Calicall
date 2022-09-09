@@ -30,6 +30,8 @@ const FriendButton: React.FC<IUser> = (data) => {
 const SideMenuBar: React.FC = () => {
   const { friends } = useContext(authContext);  
   const router = useRouter();
+
+  friends.filter(f => f.accepted === true);
   return (
     <div className={styles.container}>
       <div className={styles.friendBtn} onClick={() => router.push("/app/me")}>
