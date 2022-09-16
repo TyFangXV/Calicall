@@ -657,6 +657,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@swc/helpers@npm:^0.3.13":
+  version: 0.3.17
+  resolution: "@swc/helpers@npm:0.3.17"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: ce3a5146d738b707f0608bba731aa1fd0a8e3f75f140ff7281225d775a769f085f085e0293b570a9d201c76e09951af178c9222d8c706d4ed0d1c85b25f55cb6
+  languageName: node
+  linkType: hard
+
 "@types/js-cookie@npm:^2.2.6":
   version: 2.2.7
   resolution: "@types/js-cookie@npm:2.2.7"
@@ -1108,6 +1117,7 @@ __metadata:
     eslint-config-next: 12.2.3
     framer-motion: ^7.2.0
     next: ^12.2.5
+    peerjs: ^1.4.7
     react: 18.2.0
     react-dom: 18.2.0
     react-icons: ^4.4.0
@@ -1759,6 +1769,13 @@ __metadata:
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
   checksum: 22b5b08f74737379a840b8ed2036a5fb35826c709ab000683b092d9054e5c2a82c27818f12604bfc2a9a76b90b6834ef081edbc1c7ae30d1627012e067c6ec87
+  languageName: node
+  linkType: hard
+
+"eventemitter3@npm:^4.0.7":
+  version: 4.0.7
+  resolution: "eventemitter3@npm:4.0.7"
+  checksum: 1875311c42fcfe9c707b2712c32664a245629b42bb0a5a84439762dd0fd637fc54d078155ea83c2af9e0323c9ac13687e03cfba79b03af9f40c89b4960099374
   languageName: node
   linkType: hard
 
@@ -2924,6 +2941,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"peerjs-js-binarypack@npm:1.0.1":
+  version: 1.0.1
+  resolution: "peerjs-js-binarypack@npm:1.0.1"
+  checksum: 1b543e339956587ee35b80c61f959e3934e321db074da1f78f91af816f85baaefaeb907e7b5364f726e07c02a49d5daccb14714d62007102aa6ef8d86f5b083a
+  languageName: node
+  linkType: hard
+
+"peerjs@npm:^1.4.7":
+  version: 1.4.7
+  resolution: "peerjs@npm:1.4.7"
+  dependencies:
+    "@swc/helpers": ^0.3.13
+    eventemitter3: ^4.0.7
+    peerjs-js-binarypack: 1.0.1
+    webrtc-adapter: ^7.7.1
+  checksum: 9a1af9134a3d41a703af1716370bf85f73c58f138259a2f922a51c635b8ebbbc19d7c63be0711958d73fb6c41b45505bf067e40ea0e0d94c1f41a5a6a05c5278
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.0
   resolution: "picocolors@npm:1.0.0"
@@ -3219,6 +3255,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rtcpeerconnection-shim@npm:^1.2.15":
+  version: 1.2.15
+  resolution: "rtcpeerconnection-shim@npm:1.2.15"
+  dependencies:
+    sdp: ^2.6.0
+  checksum: 42a733d8e3846b7e7e3c33b6d5cddec95659ceb39d3f990f0a4437e6d719ed717237fea02352d4a18d86c825a1493eaeb481cc835267d2288b0ce43582b97f46
+  languageName: node
+  linkType: hard
+
 "rtl-css-js@npm:^1.14.0":
   version: 1.16.0
   resolution: "rtl-css-js@npm:1.16.0"
@@ -3264,6 +3309,13 @@ __metadata:
   version: 5.2.0
   resolution: "screenfull@npm:5.2.0"
   checksum: 21eae33b780eb4679ea0ea2d14734b11168cf35049c45a2bf24ddeb39c67a788e7a8fb46d8b61ca6d8367fd67ce9dd4fc8bfe476489249c7189c2a79cf83f51a
+  languageName: node
+  linkType: hard
+
+"sdp@npm:^2.12.0, sdp@npm:^2.6.0":
+  version: 2.12.0
+  resolution: "sdp@npm:2.12.0"
+  checksum: 5deb20ac50a1aeb4dd5ff2e506c22d1674222c21f08ae97105c9552ae979e90ddc42b8526f2c3dcacfeebc45c7b2e6b6b4254ae2cf335263bf3ddf2ad9b8ec76
   languageName: node
   linkType: hard
 
@@ -3737,6 +3789,16 @@ __metadata:
   version: 2.3.0
   resolution: "v8-compile-cache@npm:2.3.0"
   checksum: adb0a271eaa2297f2f4c536acbfee872d0dd26ec2d76f66921aa7fc437319132773483344207bdbeee169225f4739016d8d2dbf0553913a52bb34da6d0334f8e
+  languageName: node
+  linkType: hard
+
+"webrtc-adapter@npm:^7.7.1":
+  version: 7.7.1
+  resolution: "webrtc-adapter@npm:7.7.1"
+  dependencies:
+    rtcpeerconnection-shim: ^1.2.15
+    sdp: ^2.12.0
+  checksum: 16534a721794bf375753b031e538f5c1ce84df3a272085069bbce7fa1b085e5a2d33b92096256a6fdacdf6f9e30f8543e2478a293ccf5a3849bc7143b10b38d3
   languageName: node
   linkType: hard
 

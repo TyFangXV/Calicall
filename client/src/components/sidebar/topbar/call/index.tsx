@@ -3,23 +3,22 @@ import { SocketContext } from '../../../../utils/context/socketContext';
 import { IUser } from '../../../../utils/types';
 import styles from '../style.module.css';
 import {
-  BsCamera,
   BsFillCameraVideoFill,
   BsFillCameraVideoOffFill,
 } from 'react-icons/bs';
-import { BiPhoneCall } from 'react-icons/bi';
 import { MdCall, MdCallEnd } from 'react-icons/md';
 import { FaMicrophoneSlash, FaMicrophoneAlt } from 'react-icons/fa';
 import Image from 'next/image';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { DMcallLogger } from '../../../../utils/state';
+import peerjs from 'peerjs'
 
 interface Props {
   User: IUser;
   local: boolean;
 }
 
-export const ControlButtons: React.FC<{ local: boolean }> = ({ local }) => {
+export const ControlButtons: React.FC<{ local: boolean, peer:peerjs }> = ({ local, peer}) => {
   const [video, setVideo] = useState(false);
   const [audio, setAudio] = useState(true);
   const {
@@ -31,13 +30,19 @@ export const ControlButtons: React.FC<{ local: boolean }> = ({ local }) => {
     videoStatus,
     audioStatus,
   } = useContext(SocketContext);
-  const dmCallLogger = useRecoilValue(DMcallLogger);
+  const [dmCallLogger, setDmCallLogger] = useRecoilState(DMcallLogger);
 
-  const answerCall = () => {
-    socket.emit("answerCall", {
-      to : ""
+  const answerCall = (peerID:string) => {
+    socket.emit('answerCall', {
+      to: dmCallLogger.user.id,
+      id : peerID
     });
-  }
+
+    setDmCallLogger({
+      ...dmCallLogger,
+      callAccepted : true
+    })
+  };
 
   useEffect(() => {
     navigator.mediaDevices
@@ -60,7 +65,8 @@ export const ControlButtons: React.FC<{ local: boolean }> = ({ local }) => {
 
   return (
     <div className={styles.controlBtn}>
-      {local ? (
+      {
+      local ? (
         <div>
           <button
             className={styles.ctrl_btn}
@@ -96,26 +102,28 @@ export const ControlButtons: React.FC<{ local: boolean }> = ({ local }) => {
           >
             {audio ? <FaMicrophoneAlt /> : <FaMicrophoneSlash />}
           </button>
-          <button className={styles.ctrl_btn}>
-            {
-              dmCallLogger.callAccepted ? (
+            {dmCallLogger.callAccepted ? (
+              <button className={styles.ctrl_btn} >
                 <MdCallEnd />
-              ) : (
-                <div>
-                  <MdCall/>
-                </div>
-              )
-            }
-          </button>
+              </button>
+            ) : (
+              <button className={styles.ctrl_btn} onClick={() => {answerCall(peer.id)}}>
+                <MdCall/>
+              </button>
+            )}
         </div>
       )}
     </div>
   );
 };
 
+
+
+
+
 const CallPrompt: React.FC<Props> = ({ User, local }) => {
   const { localUserVideo, stream, videoStatus } = useContext(SocketContext);
-
+  const peer = new peerjs();
   return (
     <div>
       {local ? (
@@ -149,7 +157,7 @@ const CallPrompt: React.FC<Props> = ({ User, local }) => {
               />
             )}
           </div>
-          <ControlButtons local={true} />
+          <ControlButtons local={true} peer={peer}/>
         </div>
       ) : (
         <div>
@@ -182,7 +190,7 @@ const CallPrompt: React.FC<Props> = ({ User, local }) => {
               />
             )}
           </div>
-          <ControlButtons local={false}/>
+          <ControlButtons local={false} peer={peer}/>
         </div>
       )}
     </div>

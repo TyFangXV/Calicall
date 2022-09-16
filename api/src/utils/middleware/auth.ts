@@ -44,7 +44,10 @@ const tokenValidator = async(token:string, id:string) => {
             {  
                 return false;
             }else{
-                redisClient.set(tk.id , JSON.stringify(tk));
+                redisClient.set(tk.id , JSON.stringify(tk), {
+                    EX: tk.expiresAt.getTime(),
+                    NX: true
+                });
                 return true;
             }
         }

@@ -146,7 +146,7 @@ socket.on("connection", (IS) => {
         const recieverID = getUserConnectionID(data.to);
         if(recieverID)
         {
-            socket.to(recieverID).emit("callAccepted", data.signal);
+            socket.to(recieverID).emit("callAccepted", data.id);
         }
 	});
 
