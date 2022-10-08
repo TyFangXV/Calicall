@@ -3,6 +3,37 @@ Call, message and always be connected with your friends, using Calicall!
 
 This project has not released yet, but you can find the beta @ [calicall.app](https://calicallapp).
 
+<br>
+
+
+# How to run the API?
+
+* Register a discord auth application
+
+* fill in the creds in the .env of the api folder as :-
+  <b>
+
+  * DISCORD_AUTH_CLIENT_ID
+  * DISCORD_AUTH_REDIRECT_URI
+  * DISCORD_AUTH_CLIENT_SECRET
+
+  </b>
+
+* Run the docker Container
+
+<br>
+
+# Client side
+* Register for an giphy application
+* Put the Giphy api key as <b>NEXT_PUBLIC_GIPHY_API_KEY<b>
+
+<br>
+
+# Any issue?
+<i><b>Please put it as an issue, with the error<b><i>
+
+<br>
+
 ## Contributors
 
 <table>
