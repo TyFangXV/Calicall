@@ -1,0 +1,43 @@
+version: '1'
+services:
+    redis:
+      image: "redis:alpine"
+      ports:
+        - 49154:49154
+      networks:
+        - central
+    db:
+      container_name: db
+      image: postgres
+      volumes:
+        - data:/data/db
+      restart: always
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      ports:
+        - '49153:49153'
+      networks:
+        - central
+    calicall:
+      container_name: api
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      env_file:
+        .env
+      environment:
+        - DATABASE_URL=postgres://postgres:postgres@db?schema=public&connect_timeout=60
+        - REDIS_URL=redis://redis
+      ports:
+        - "5000:5000"
+      depends_on:
+        - db
+      links:
+        - db:db
+      networks:
+        - central
+volumes: 
+  data: {}
+networks:
+    central:
