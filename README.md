@@ -29,7 +29,7 @@ This project has isn't finished yet
 
 <br>
 
-# Any issue?
+# Any issues?
 <i><b>Please put it as an issue, with the error<b><i>
 
 <br>
