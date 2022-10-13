@@ -1,0 +1,6 @@
+{
+    "name" : "NAME OF THE LOG",
+    "log_folder" : "NAME OF THE LOG FOLDER",
+    "time_zone" : "THE TIMEZONE OF THE LOGS",
+    "path" : "PATH OF THE CONFIGS"
+}
