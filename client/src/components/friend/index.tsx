@@ -2,42 +2,21 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from './styles.module.css';
 import axios from "axios";
 import { authContext } from "../../utils/context/auth";
-import { IFriendRequest } from "../../utils/types";
+import { FriendList } from "../../utils/state";
 import { SocketContext } from "../../utils/context/socketContext";
 import * as uuid from 'uuid'
 import Accept_Tab from "./cards/Accept_tab";
 import Invite_Tab from "./cards/invite_tab";
+import { useRecoilState } from "recoil";
 
 const Friend:React.FC = () => {
     const {socket} = useContext(SocketContext);
     const friendDivRef = React.useRef<HTMLDivElement>(null);
     const friendRef = React.useRef<HTMLInputElement>(null);
     const {user, friends, token} = useContext(authContext);
-    const [friendRequest, setFriendRequest] = useState<IFriendRequest[]>([...friends]);
+    const [friendRequest, setFriendRequest] = useRecoilState(FriendList);
 
-    useEffect(() => {        
-        socket.on("userSystemAlert", (data:any) => {
-            if(data.message.type === "FRIEND_REQUEST_UI_UPDATE")
-            {
-                getFriends()
-                .then((res:any[]) => {
-                    setFriendRequest([...res]);
-                    console.log(friendRequest);
-                    
-                })
-                .catch((err) => console.log(err));  
-            }
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, socket])
     
-
-    //check if the user's friend is online
-    const isOnline = (id:string) => {
-        socket.on("isOnline", data => {
-
-        });
-    }
 
 
 
@@ -57,8 +36,7 @@ const Friend:React.FC = () => {
                 getFriends()
                 .then((res:any[]) => {
                     setFriendRequest([...res]);
-                    console.log(friendRequest);
-                    
+
                 })
                 .catch((err) => console.log(err));  
                 return null;
@@ -102,7 +80,7 @@ const Friend:React.FC = () => {
 
 
 
-    const FriendList:React.FC = () => {
+    const FriendListView:React.FC = () => {
         return (
             <div className={styles.list}>
             {
@@ -152,7 +130,7 @@ const Friend:React.FC = () => {
                 <Input/>
                 <hr className={styles.breaker}/>    
                 <div className={styles.friendsLst}>
-                    <FriendList/>
+                    <FriendListView/>
                 </div>
             </div>
         </div>

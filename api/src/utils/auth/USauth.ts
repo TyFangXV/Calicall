@@ -80,7 +80,7 @@ export class UserDataHandler{
                 const data = {
                     token: token,
                     refreshToken: refreshToken,
-                    expiresAt: new Date(Date.now() + (60 * 60 * 1000)),
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                     id : userID
                 }
 
@@ -102,7 +102,7 @@ export class UserDataHandler{
             const data = {
                 token: token,
                 refreshToken: refreshToken,
-                expiresAt: new Date(Date.now() + (60 * 60 * 1000)),
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 id : userID
             }
 

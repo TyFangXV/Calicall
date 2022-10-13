@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, {Context, createContext, useEffect, useState} from 'react'
+import { useRecoilState } from 'recoil';
+import { FriendList } from '../state';
 import { IFriendRequest, IUser } from '../types';
 
 interface Props {
@@ -32,7 +34,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         signedIn: false,
     });
 
-    const [friends, setFriends] = useState<IFriendRequest[]>([]);
+    const [friends, setFriends] = useRecoilState(FriendList)
     const [token, setToken] = useState<Token>({
         token: "",
         expiresIn: new Date(),

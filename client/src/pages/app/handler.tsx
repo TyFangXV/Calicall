@@ -5,6 +5,7 @@ import AppBar from "../../components/appbar";
 import SideBar from "../../components/sidebar";
 import { authContext } from "../../utils/context/auth";
 import { SocketContext } from "../../utils/context/socketContext";
+import StateUpdaterProvider from "../../utils/context/stateUpdater";
 
 
 type Props = {
@@ -47,19 +48,20 @@ const Home = ({ Component, pageProps}:Props) => {
     }, [])
     
     return(
-        <AlertContainer AlertMessage={userAlert}>
-            <div>
+        <StateUpdaterProvider>
+            <AlertContainer AlertMessage={userAlert}>
                 <div>
-                    <div style={{position : "absolute", left : "0", top : "0"}}>
-                    <SideBar/>
-                    </div>
-                </div>
                     <div>
-                        <Component {...pageProps} /> 
+                        <div style={{position : "absolute", left : "0", top : "0"}}>
+                        <SideBar/>
+                        </div>
                     </div>
-            </div>            
-        </AlertContainer>
-
+                        <div>
+                            <Component {...pageProps} /> 
+                        </div>
+                </div>            
+            </AlertContainer>
+        </StateUpdaterProvider>
     )
 }
 

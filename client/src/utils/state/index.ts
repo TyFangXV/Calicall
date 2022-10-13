@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { IMessage, IUser } from "../types";
+import { IFriendRequest, IMessage, IUser } from "../types";
 
 
 interface IUnseemMessagesDM {
@@ -50,4 +50,9 @@ export const DMcallLogger = atom<IDMcallLogger>({
         isLocalUserCalling : false,
         callAccepted : false
     }
+})
+
+export const FriendList = atom<IFriendRequest[]>({
+    key: "FriendsList",
+    default : []
 })

@@ -11,12 +11,11 @@ services:
       image: postgres
       volumes:
         - data:/data/db
-      restart: always
       environment:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
       ports:
-        - '49153:49153'
+        - '8181:49153'
       networks:
         - central
     calicall:
