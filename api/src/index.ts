@@ -14,6 +14,7 @@ import connectRedis from 'connect-redis'
 import prisma from './utils/database'
 import { redisClient } from './utils/redis'
 import {ExpressPeerServer} from 'peer'
+import logger from './utils/logger'
 
 
 
@@ -76,15 +77,8 @@ socket.on("connection", (IS) => {
     });
 
     IS.on("userSystemAlert", (data: { userID: string, message: IuserAlertMessage }) => {
-        console.log(data);
         const connectedID = getUserConnectionID(data.userID);
-        if (connectedID) {
-            console.log("Notif send");
-
-            socket.to(connectedID).emit("userSystemAlertRecieve", data.message);
-        } else {
-            console.log("user not connected");
-        }
+        if (connectedID)socket.to(connectedID).emit("userSystemAlertRecieve", data.message);
     })
 
     IS.on("DM", async (data: IMessage) => {
@@ -123,7 +117,7 @@ socket.on("connection", (IS) => {
             }
 
             if (!msg) {
-                console.log("message not sent");
+                logger.warn("message not sent");
             }
         } else {
             socket.to(senderID as string).emit("DMSend", message);
@@ -138,7 +132,7 @@ socket.on("connection", (IS) => {
         {
             socket.to(recieverID).emit("callFromFriend", data);
         }else{
-            console.log("User not found in online chat")
+            logger.warn("User not found in online chat")
         }
 	});
 
@@ -151,7 +145,7 @@ socket.on("connection", (IS) => {
 	});
 
     IS.on("disconnect", () => {
-        console.log(`${IS.id} has disconnected`);
+        logger.warn(`${IS.id} has disconnected`);
         socket.emit("userLeft", connectedUser.find(user => user.connectedID === IS.id)?.userId);
         connectedUser.splice(connectedUser.findIndex(user => user.connectedID === IS.id), 1);
     })
@@ -165,7 +159,7 @@ socket.on("connection", (IS) => {
 precheck()
     .then(({ status, message }) => {
         if (status) {
-            server.listen(5000, () => console.log(`Server is running on port 5000`));
+            server.listen(5000, () => logger.show("Server started"));
         } else {
             console.log(message);
         }
