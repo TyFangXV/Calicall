@@ -1,0 +1,3 @@
+[submodule "packages/deez"]
+	path = packages/deez
+	url = https://github.com/TyFangXV/DL-logger.git
