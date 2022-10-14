@@ -1,3 +1,6 @@
-[submodule "packages/deez"]
-	path = packages/deez
+[submodule "packages/logger"]
+	path = packages/logger
+	url = https://github.com/TyFangXV/DL-logger.git
+[submodule "logger"]
+	path = logger
 	url = https://github.com/TyFangXV/DL-logger.git
