@@ -1,4 +1,5 @@
 import axios from "axios";
+import logger from "../logger";
 import {UserDataHandler} from "./USauth";
 
 class DiscordAuth {
@@ -32,8 +33,8 @@ class DiscordAuth {
             })
     
             return data;
-        } catch (error) {
-            console.log(error)
+        } catch (error:any) {
+            logger.error(error)
             return null;
         }
     }
@@ -78,8 +79,8 @@ class DiscordAuth {
             }else{
                 return null;
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error:any) {
+            logger.error(error);
             
             return null;
         }
@@ -96,8 +97,6 @@ class DiscordAuth {
 
         }catch(e)
         {
-            console.log(e);
-            
             return null;           
         }
     } 

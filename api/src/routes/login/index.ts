@@ -35,8 +35,6 @@ authRouter.post("/tokenValidation" , async(req, res) => {
         {
           res.status(200).send(tk);
         }else{
-          console.log("Token Updated");
-          
           const user = await new User(userID).getUserData(userID);
           //update the token
           const token = await new UserDataHandler(
@@ -88,8 +86,6 @@ authRouter.get("/cb", async(req, res) => {
   }
 
  } catch (error) {
-  console.log(error);
-  
   res.status(500).send("Please try again later");
  }
 })

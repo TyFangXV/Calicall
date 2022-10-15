@@ -18,14 +18,16 @@ type Token = {
 interface AuthContext {
     user: IUser;
     friends: IFriendRequest[];
-    token: Token
+    token: Token;
+    loaded:boolean
 }
 
 export const authContext = createContext({} as AuthContext);
 
 
 const AuthProvider: React.FC<Props> = ({children}) => {
-    const router = useRouter();
+    const [loaded, setLoaded] = useState(false);
+
     const [user, setUser] = useState<IUser>({
         id: "",
         name: "",
@@ -87,7 +89,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                         });
 
                         setFriends([...Friends]);
-
+                        setLoaded(true)
                     }
                     
                 }
@@ -96,6 +98,7 @@ const AuthProvider: React.FC<Props> = ({children}) => {
                     ...user,
                     signedIn : false
                 })
+                setLoaded(true)
                 return null;
             }
         })(); 
@@ -108,7 +111,8 @@ const AuthProvider: React.FC<Props> = ({children}) => {
         <authContext.Provider value={{
             user,
             friends,
-            token
+            token,
+            loaded
         }}>
             {children}
         </authContext.Provider>

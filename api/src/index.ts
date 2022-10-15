@@ -161,6 +161,6 @@ precheck()
         if (status) {
             server.listen(5000, () => logger.show("Server started"));
         } else {
-            console.log(message);
+            console.error(message);
         }
     }).catch(error => console.log(error));

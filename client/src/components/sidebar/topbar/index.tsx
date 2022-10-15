@@ -1,27 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MdCall } from "react-icons/md";
-import { useRecoilState, useResetRecoilState } from "recoil";
 import { authContext } from "../../../utils/context/auth";
-import { SocketContext } from "../../../utils/context/socketContext";
-import { DMcallLogger } from "../../../utils/state";
-import { ICallUser, IUser } from "../../../utils/types";
-import CallPrompt from "./call";
+import {IUser } from "../../../utils/types";
 import styles from './style.module.css';
 
 const TopBar:React.FC<{User:IUser}> = ({User}) => {
-    const {callUser, stopBothVideoAndAudio, stream} = useContext(SocketContext);
-    const [viewModel, setViewModel] = useState(false);
-    const [dmCallLogger, setDMcallLogger] = useRecoilState(DMcallLogger);
-    const resetDmCallLooger = useResetRecoilState(DMcallLogger)
-    const {user, friends} = useContext(authContext)
-    
+    const callWindow = window;
+    const {user} = useContext(authContext)
     /*
-        Call the User
-        View the DM_CALL model
-        Handle the timing of when to close the call
-    */
-    const handleClick = () => {
-        setViewModel(true)
+setViewModel(true)
         callUser(user.id, User.id)
         setDMcallLogger({
             isLocalUserCalling : true,
@@ -36,6 +23,9 @@ const TopBar:React.FC<{User:IUser}> = ({User}) => {
                 resetDmCallLooger()
             }
         } , 15000)
+    */
+    const handleClick = () => {
+        const prompt = callWindow.open(`/call?r=${User.id}&s=${user.id}`, "call", `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000,`);
     }
 
     return (
@@ -44,18 +34,9 @@ const TopBar:React.FC<{User:IUser}> = ({User}) => {
                 <h1 className={styles.username}>@{User.name}</h1>
                 <div className={styles.btn}>
                     <span title="Call User" className={styles.title}>
-                        <MdCall className={styles.callBtn} onClick={ () => !dmCallLogger.isCalling && handleClick() } />
+                        <MdCall className={styles.callBtn} onClick={ () =>  handleClick() } />
                     </span>
                 </div>
-            </div>
-            <div className={styles.callPopup} style={{display : dmCallLogger.isCalling || dmCallLogger.isLocalUserCalling ? "flex" : viewModel ? "flex" : "none"}}>
-                {
-                    dmCallLogger.isLocalUserCalling ? (
-                        <CallPrompt User={User} local={true}/>
-                    ) : (
-                        <CallPrompt User={friends.find(f => f.receiver?.id === User.id)?.receiver as IUser} local={false}/>
-                    )
-                }
             </div>
         </div>
     )

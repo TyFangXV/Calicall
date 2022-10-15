@@ -1,5 +1,6 @@
 import {Request, Response, NextFunction } from 'express';
 import prisma from '../database';
+import logger from '../logger';
 import {redisClient} from '../redis'
 
 const tokenValidator = async(token:string, id:string) => {
@@ -95,8 +96,8 @@ const authMiddleware = async(req: Request, res: Response, next: NextFunction) =>
                         error: "Invalid token"
                     })
                 }         
-            } catch (error) {
-                console.log(error);
+            } catch (error:any) {
+                logger.error(error);
                 return res.status(500).send(error);
             }
     

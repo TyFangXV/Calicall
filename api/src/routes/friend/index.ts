@@ -60,7 +60,6 @@ router.post("/invite", async(req,res) => {
 
                    res.status(200).send(newFriendship);
                }else{
-                console.log(getUserConnectionID(receiverID));
                 res.status(200).send(friendship);
                }
             }
