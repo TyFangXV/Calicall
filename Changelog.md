@@ -12,3 +12,8 @@
 * Extended the duration of the token 
 * standard logging system for the app(beta)  
 
+# 0.1.7v
+
+* Custom logger 
+* New call prompt
+* New Call system

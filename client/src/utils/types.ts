@@ -59,3 +59,8 @@ export interface ICallUser{
     to : string,
     signal : string,
 }
+
+export type CallPromptType = {
+    localUser:IUser
+    EndUser:IUser
+}

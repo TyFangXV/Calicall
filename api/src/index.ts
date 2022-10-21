@@ -128,9 +128,10 @@ socket.on("connection", (IS) => {
 	IS.on("callUser", (data:ICallUser) => {
         const recieverID = getUserConnectionID(data.to);
         const senderID = getUserConnectionID(data.me);
-        if(recieverID)
+        if(recieverID && senderID)
         {
             socket.to(recieverID).emit("callFromFriend", data);
+            socket.to(senderID).emit("CallUserSend");
         }else{
             logger.warn("User not found in online chat")
         }
