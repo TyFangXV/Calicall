@@ -12,6 +12,7 @@ import TopBar from '../../../components/sidebar/topbar';
 import ChatInterface from '../../../components/message';
 import axios from 'axios';
 import { useAlert } from '../../../components/alert';
+import P2PCallContextProvider from '../../../utils/context/P2PCall';
 
 const Chat: NextPage = () => {
   const router = useRouter();
@@ -92,6 +93,7 @@ const Chat: NextPage = () => {
   }, [messages, socket])
 
   return (
+    <P2PCallContextProvider endUserID={friend?.id as string}>
     <div className={style.container}>
       <Head>
         <title>{friend?.name}</title>
@@ -124,6 +126,7 @@ const Chat: NextPage = () => {
         </div>
       </div>
     </div>
+    </P2PCallContextProvider>
   );
 };
 

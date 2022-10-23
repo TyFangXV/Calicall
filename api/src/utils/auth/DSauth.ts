@@ -34,7 +34,7 @@ class DiscordAuth {
     
             return data;
         } catch (error:any) {
-            logger.error(error)
+            console.error(error)
             return null;
         }
     }
@@ -80,7 +80,7 @@ class DiscordAuth {
                 return null;
             }
         } catch (error:any) {
-            logger.error(error);
+            console.error(error);
             
             return null;
         }

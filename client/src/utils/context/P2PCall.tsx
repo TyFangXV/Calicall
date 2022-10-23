@@ -5,42 +5,73 @@ import { authContext } from "./auth";
 
 interface Props{
     children:React.ReactNode;
-    localUserElement:HTMLVideoElement;
     endUserID:string;
-    endUserElement:HTMLVideoElement;
 }
 
 export interface p2pCallContextProviderTypes {
-    isInitializingCall : boolean;
+    hasInitializingCall : boolean;
+    isRingingUser:boolean;
+    callAccepted:boolean;
+    calluser: () => void;
 
 }
 
 export const P2PCallContext = createContext({});
 
 
-const P2PCallContextProvider:FC<Props> = ({children, localUserElement, endUserID ,endUserElement}) => {
+const P2PCallContextProvider:FC<Props> = ({children,  endUserID}) => {
     const {socket} = useContext(SocketContext);
     const {user} = useContext(authContext);
-    const [isInitializingCall, setIsInitializingCall] = useState<boolean>(true);
+    const [hasInitializingCall, setIsInitializingCall] = useState<boolean>(false);
     const [isRingingUser, setIsRingingUser] = useState<boolean>(false);
     const [callAccepted, setIsCallAccepted] = useState<Boolean>(false);
 
+    interface callSession {
+        sendTo:String;
+        sendFrom:string;
+    }
+
+    var callSession:callSession = {
+        sendTo : "",
+        sendFrom : ""
+    };
+
     const peer = new Peer();
 
-    useEffect(() => {
+    const callUser = () => {
         socket.emit("callUser", {
             me : user.id,
-            to :endUserID 
+            to :endUserID,
+            peerID : peer.id
+        });
+
+        callSession = {
+            sendTo: endUserID,
+            sendFrom: user.id
+        }
+    }
+
+    useEffect(() => {
+
+        socket.on("CallUserSend", data => {
+           if(callSession.sendTo === data.to && callSession.sendFrom === data.me)
+           {
+             setIsInitializingCall(true);
+             setIsRingingUser(true);
+           }
         })
-    }, [socket])
+    }, [callSession.sendFrom, callSession.sendTo, socket])
 
     return(
         <P2PCallContext.Provider value={{
-            isInitializingCall,
+            hasInitializingCall,
             isRingingUser,
-            callAccepted
+            callAccepted,
+            callUser
         }}>
             {children}
         </P2PCallContext.Provider>
     )
 }
+
+export default P2PCallContextProvider;

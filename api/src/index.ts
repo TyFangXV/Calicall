@@ -117,7 +117,7 @@ socket.on("connection", (IS) => {
             }
 
             if (!msg) {
-                logger.warn("message not sent");
+                console.warn("message not sent");
             }
         } else {
             socket.to(senderID as string).emit("DMSend", message);
@@ -131,9 +131,9 @@ socket.on("connection", (IS) => {
         if(recieverID && senderID)
         {
             socket.to(recieverID).emit("callFromFriend", data);
-            socket.to(senderID).emit("CallUserSend");
+            socket.to(senderID).emit("CallUserSend", {...data, callsend:true});
         }else{
-            logger.warn("User not found in online chat")
+            console.warn("User not found in online chat")
         }
 	});
 
@@ -146,7 +146,7 @@ socket.on("connection", (IS) => {
 	});
 
     IS.on("disconnect", () => {
-        logger.warn(`${IS.id} has disconnected`);
+        console.warn(`${IS.id} has disconnected`);
         socket.emit("userLeft", connectedUser.find(user => user.connectedID === IS.id)?.userId);
         connectedUser.splice(connectedUser.findIndex(user => user.connectedID === IS.id), 1);
     })
@@ -160,7 +160,7 @@ socket.on("connection", (IS) => {
 precheck()
     .then(({ status, message }) => {
         if (status) {
-            server.listen(5000, () => logger.show("Server started"));
+            server.listen(5000, () => console.log("Server started"));
         } else {
             console.error(message);
         }

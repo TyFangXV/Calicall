@@ -1,3 +1,5 @@
+import { LegacyRef, MutableRefObject } from "react";
+
 export interface IUser {
     id: string;
     name: string;
@@ -61,6 +63,6 @@ export interface ICallUser{
 }
 
 export type CallPromptType = {
-    localUser:IUser
-    EndUser:IUser
+    localUser:IUser;
+    EndUser:IUser;
 }

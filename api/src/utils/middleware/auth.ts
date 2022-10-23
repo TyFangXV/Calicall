@@ -97,7 +97,7 @@ const authMiddleware = async(req: Request, res: Response, next: NextFunction) =>
                     })
                 }         
             } catch (error:any) {
-                logger.error(error);
+                console.error(error);
                 return res.status(500).send(error);
             }
     

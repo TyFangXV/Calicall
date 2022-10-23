@@ -17,3 +17,10 @@
 * Custom logger 
 * New call prompt
 * New Call system
+
+
+# 0.1.8v
+
+* Connected the Socket with the call prompt 
+
+
