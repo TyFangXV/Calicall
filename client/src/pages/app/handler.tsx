@@ -1,11 +1,14 @@
 import { useContext, useEffect } from "react";
+import { useRecoilValue } from "recoil";
 import AlertContainer, { useAlert } from "../../components/alert";
 import Alert from "../../components/alert";
 import AppBar from "../../components/appbar";
 import SideBar from "../../components/sidebar";
 import { authContext } from "../../utils/context/auth";
+import P2PCallContextProvider from "../../utils/context/P2PCall";
 import { SocketContext } from "../../utils/context/socketContext";
 import StateUpdaterProvider from "../../utils/context/stateUpdater";
+import { currentFriend } from "../../utils/state";
 
 
 type Props = {
@@ -17,6 +20,7 @@ type Props = {
 const Home = ({ Component, pageProps}:Props) => {
     const {user} = useContext(authContext);
     const socket = useContext(SocketContext);
+    const CurrentFriend = useRecoilValue(currentFriend)
     const {userAlert} = useAlert()
     
     useEffect(() => {
@@ -49,18 +53,18 @@ const Home = ({ Component, pageProps}:Props) => {
     
     return(
         <StateUpdaterProvider>
-            <AlertContainer AlertMessage={userAlert}>
-                <div>
+                <AlertContainer AlertMessage={userAlert}>
                     <div>
-                        <div style={{position : "absolute", left : "0", top : "0"}}>
-                        <SideBar/>
-                        </div>
-                    </div>
                         <div>
-                            <Component {...pageProps} /> 
+                            <div style={{position : "absolute", left : "0", top : "0"}}>
+                            <SideBar/>
+                            </div>
                         </div>
-                </div>            
-            </AlertContainer>
+                            <div>
+                                <Component {...pageProps} /> 
+                            </div>
+                    </div>            
+                </AlertContainer>
         </StateUpdaterProvider>
     )
 }

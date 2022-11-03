@@ -5,28 +5,8 @@ import {IUser } from "../../../utils/types";
 import styles from './style.module.css';
 
 const TopBar:React.FC<{User:IUser}> = ({User}) => {
-    const callWindow = window;
-    const {user} = useContext(authContext)
-    /*
-setViewModel(true)
-        callUser(user.id, User.id)
-        setDMcallLogger({
-            isLocalUserCalling : true,
-            callAccepted : false,
-            isCalling : false,
-            user : friends.find(f => f.receiver?.id === User.id)?.receiver as IUser
-        })
-        setTimeout(() => {
-            if(!dmCallLogger.callAccepted)
-            {
-                setViewModel(false)
-                resetDmCallLooger()
-            }
-        } , 15000)
-    */
-    const handleClick = () => {
-        const prompt = callWindow.open(`/call?r=${User.id}&s=${user.id}`, "call", `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000,`);
-    }
+    const {user} = useContext(authContext);
+    const [isCalling, setIsCalling] = useState(false);
 
     return (
         <div>
@@ -34,10 +14,17 @@ setViewModel(true)
                 <h1 className={styles.username}>@{User.name}</h1>
                 <div className={styles.btn}>
                     <span title="Call User" className={styles.title}>
-                        <MdCall className={styles.callBtn} onClick={ () =>  handleClick() } />
+                        <MdCall className={styles.callBtn} onClick={() => {if(!isCalling) setIsCalling(true)}} />
                     </span>
                 </div>
             </div>
+            {
+                isCalling && (
+                   <div className={styles.CallPrompt}>
+                     <iframe src={`/call?r=${User.id}&s=${user.id}`} width={"100vw"}/>
+                  </div>
+                )
+            }
         </div>
     )
 }

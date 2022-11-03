@@ -29,7 +29,12 @@ const StateUpdaterProvider:React.FC<Props> = ({children}) => {
                 .catch((err) => console.log(err));  
             }
         })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        
+        socket.on("callFromFriend", (data:any) => {
+            console.log("daat")
+        })
+
     }, [user, socket])
     
     const getFriends = async() => {

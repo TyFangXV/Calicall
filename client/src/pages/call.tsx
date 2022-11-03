@@ -8,6 +8,7 @@ import { CallPromptType, IFriendRequest, IUser } from '../utils/types';
 import loadingIcon from '../asset/loading.svg';
 import Image from 'next/image';
 import styles from '../styles/call.module.css';
+import P2PCallContextProvider, { P2PCallContext } from '../utils/context/P2PCall';
 
 
 const Loading_prompt: React.FC = () => {
@@ -46,10 +47,12 @@ const Loading_prompt: React.FC = () => {
   );
 };
 
-const Call_prompt: React.FC<CallPromptType> = ({
-  EndUser,
-  localUser
-}) => {
+const Call_prompt: React.FC<CallPromptType> = ({EndUser,localUser}) => {
+  const {callUser} = useContext(P2PCallContext);
+
+  useEffect(() => {
+    console.log(callUser());
+  }, [callUser])
   return (
       <div>
 
@@ -62,13 +65,7 @@ const DMCallPage: NextPage = () => {
   const { loaded, user } = useContext(authContext);
   const [friend, setFriend] = useState<IUser>();
   const [promptLoading, setPromptloading] = useState(true);
-
   const router = useRouter();
-
-
-  const localUserVideo = useRef<HTMLVideoElement>(null);
-  const endUserVideo = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
     setTimeout(() => {
       setPromptloading(false);

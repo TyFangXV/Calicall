@@ -56,3 +56,15 @@ export const FriendList = atom<IFriendRequest[]>({
     key: "FriendsList",
     default : []
 })
+
+export const currentFriend = atom<IUser>({
+    key : "CurrentUser",
+    default: {
+        id: "",
+        name : "",
+        profile_pic : "",
+        email : "",
+        signedIn : false
+
+    } 
+})

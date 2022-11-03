@@ -102,14 +102,6 @@ const ChatInterface: React.FC<IProps> = ({ Messages, Friend }) => {
     [Messages]
   );
 
-  useEffect(() => {
-    if(containerRef.current)
-    {
-        containerRef.current.addEventListener('scroll', () => {
-          setWindowScrolled(true);
-        });
-    }
-  }, []);
 
   return (
     <div className={styles.container} id="chat" ref={containerRef}>

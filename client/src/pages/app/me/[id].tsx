@@ -12,10 +12,12 @@ import TopBar from '../../../components/sidebar/topbar';
 import ChatInterface from '../../../components/message';
 import axios from 'axios';
 import { useAlert } from '../../../components/alert';
+import { useSetRecoilState } from 'recoil';
+import { currentFriend } from '../../../utils/state';
 import P2PCallContextProvider from '../../../utils/context/P2PCall';
-
 const Chat: NextPage = () => {
   const router = useRouter();
+  const setCurrentFriend = useSetRecoilState(currentFriend);
   const id = router.query.id as string;
   const { friends } = useContext(authContext);
   const [friend, setFriend] = React.useState<IUser>();
@@ -23,8 +25,12 @@ const Chat: NextPage = () => {
   const [error, setError] = React.useState<string>('');
   const {sendMessage, socket} = useContext(SocketContext);
   const {user, token} = useContext(authContext);
+
+
+
   const alert = useAlert().newAlert;
   let hasFetchedOldMessages = false;
+
   const setHasFetchedOldMessages = () => hasFetchedOldMessages = true;
 
   useEffect(() => {
@@ -32,21 +38,20 @@ const Chat: NextPage = () => {
       const friend = friends.find((friend) => friend.receiver?.id === id);
       if(friend) 
       {
+        console.log(friend.receiver);
+        
         setFriend(friend.receiver);
+        setCurrentFriend(friend.receiver as IUser);
       }else{
         router.push('/app/me');
       }
     }
-  }, [friends, id, router]);
+  }, [friends, id, router, setCurrentFriend]);
 
   useEffect(() => {
-    console.log(error);
-    
     if(!hasFetchedOldMessages)
     {
-      (async() => {
-        console.log('fetching old messages');
-        
+      (async() => {  
         try {
           const {data:msg} = await axios.post('/api/message/get', {
             me: user.id,
@@ -93,7 +98,7 @@ const Chat: NextPage = () => {
   }, [messages, socket])
 
   return (
-    <P2PCallContextProvider endUserID={friend?.id as string}>
+    <P2PCallContextProvider>
     <div className={style.container}>
       <Head>
         <title>{friend?.name}</title>
@@ -110,7 +115,7 @@ const Chat: NextPage = () => {
         </div>
         {
           error === '' ? (
-            <ChatInterface Messages={messages} Friend={friend as IUser}/>
+              <ChatInterface Messages={messages} Friend={friend as IUser}/>
             ) : (
               <div>{error}</div>
             )

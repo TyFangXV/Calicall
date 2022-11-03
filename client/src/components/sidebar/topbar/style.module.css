@@ -77,3 +77,9 @@
     color: var(--primary-color-light);
     border: 1px solid white;
 }
+
+.CallPrompt{
+    position: absolute;
+    min-width: 100vw;
+    background-color: var(--secondary-color-hover);
+}
