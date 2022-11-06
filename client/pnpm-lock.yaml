@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@giphy/js-fetch-api': ^4.4.0
   '@giphy/react-components': ^6.2.0
+  '@tiagotrindade/audio-visualizer': ^1.2.1
   '@types/node': ^18.11.9
   '@types/react': 18.0.15
   '@types/simple-peer': ^9.11.5
@@ -16,6 +17,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-icons: ^4.6.0
+  react-use-measure: ^2.1.1
   recoil: ^0.7.6
   simple-peer: ^9.11.1
   socket.io-client: ^4.5.3
@@ -25,6 +27,7 @@ specifiers:
 dependencies:
   '@giphy/js-fetch-api': 4.4.0
   '@giphy/react-components': 6.2.0_bb2bxwco6ptpubzwpazr52qf6i
+  '@tiagotrindade/audio-visualizer': 1.2.1_s37uvh7yj2tonmyl6bkkqkuuai
   axios: 0.27.2
   framer-motion: 7.6.4_biqbaboplfbrettd7655fr4n2y
   next: 12.3.2_biqbaboplfbrettd7655fr4n2y
@@ -32,6 +35,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-icons: 4.6.0_react@18.2.0
+  react-use-measure: 2.1.1_biqbaboplfbrettd7655fr4n2y
   recoil: 0.7.6_biqbaboplfbrettd7655fr4n2y
   simple-peer: 9.11.1
   socket.io-client: 4.5.3
@@ -596,6 +600,17 @@ packages:
       tslib: 2.4.1
     dev: false
 
+  /@tiagotrindade/audio-visualizer/1.2.1_s37uvh7yj2tonmyl6bkkqkuuai:
+    resolution: {integrity: sha512-rQXqzRLuK9fqgBh/pzBfspc4USGze1FS77VZzHpLtms/mYEU4fEDvrPTO+4EuCrH31TntRUy5Q5yc04OUAbJ5g==}
+    peerDependencies:
+      '@juggle/resize-observer': '>=3.0.0'
+      react: '>=14.0.0'
+      react-use-measure: '>=2.0.0'
+    dependencies:
+      react: 18.2.0
+      react-use-measure: 2.1.1_biqbaboplfbrettd7655fr4n2y
+    dev: false
+
   /@types/js-cookie/2.2.7:
     resolution: {integrity: sha512-aLkWa0C0vO5b4Sr798E26QgOkss68Un0bLjs7u9qxzPT5CG+8DuNTffWES58YzJs3hrVAOs1wonycqEBqNJubA==}
     dev: false
@@ -1031,6 +1046,10 @@ packages:
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
+
+  /debounce/1.2.1:
+    resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -2364,6 +2383,17 @@ packages:
     dependencies:
       react: 18.2.0
       tslib: 2.4.1
+    dev: false
+
+  /react-use-measure/2.1.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-nocZhN26cproIiIduswYpV5y5lQpSQS1y/4KuvUCjSKmw7ZWIS/+g3aFnX3WdBkyuGUtTLif3UTqnLLhbDoQig==}
+    peerDependencies:
+      react: '>=16.13'
+      react-dom: '>=16.13'
+    dependencies:
+      debounce: 1.2.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-use/17.4.0_biqbaboplfbrettd7655fr4n2y:

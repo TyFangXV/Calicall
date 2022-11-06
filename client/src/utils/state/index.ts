@@ -68,3 +68,8 @@ export const currentFriend = atom<IUser>({
 
     } 
 })
+
+export const userCalled = atom<boolean>({
+ key : "userCalled",
+ default: false
+})

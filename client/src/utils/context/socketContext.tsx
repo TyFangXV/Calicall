@@ -68,13 +68,7 @@ const SocketContextProvider:React.FC<Props> = ({children}) => {
     const localUserVideo = useRef<HTMLVideoElement>(null);
     const connectionRef = useRef<any>();
 
-    useEffect(() => {
-        socket.on("CallUser", (data:ICallUser) => {
-            setCall(data)
-            console.log("call recivieds");
-            
-        })
-    }, [])
+
 
 
 

@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useContext } from "react";
-import { useRecoilState } from "recoil";
-import { FriendList } from "../state";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { FriendList, userCalled } from "../state";
 import { SocketContext } from "./socketContext";
 import axios from "axios";
 import { authContext } from "./auth";
@@ -14,6 +14,8 @@ export const stateUpdaterContext = createContext({});
 
 const StateUpdaterProvider:React.FC<Props> = ({children}) => {
     const [friendRequest, setFriendRequest] = useRecoilState(FriendList);
+    const setIsUserCalled = useSetRecoilState(userCalled);
+
     const {socket} = useContext(SocketContext);
     const {user, token} = useContext(authContext);
     
@@ -32,7 +34,7 @@ const StateUpdaterProvider:React.FC<Props> = ({children}) => {
 
         
         socket.on("callFromFriend", (data:any) => {
-            console.log("daat")
+            setIsUserCalled(true);
         })
 
     }, [user, socket])

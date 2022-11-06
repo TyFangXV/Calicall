@@ -3,7 +3,8 @@ import Peer from "peerjs";
 import {SocketContext} from './socketContext'
 import { authContext } from "./auth";
 import { useRecoilValue } from "recoil";
-import { currentFriend } from "../state";
+import { currentFriend, userCalled as isUserBeingCalled } from "../state";
+import { ICallUser } from "../types";
 
 interface Props{
     children:React.ReactNode;
@@ -14,6 +15,7 @@ export interface p2pCallContextProviderTypes {
     isRingingUser:boolean;
     callAccepted:boolean;
     callUser: () => boolean;
+    userCalled:boolean;
 
 }
 
@@ -21,6 +23,7 @@ const placeHolderData:p2pCallContextProviderTypes = {
     hasInitializingCall: false,
     isRingingUser: false,
     callAccepted: false,
+    userCalled: false,
     callUser: () => {console.log("deez"); return false},
 }
 
@@ -32,6 +35,7 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
     const {user} = useContext(authContext);
     const [hasInitializingCall, setIsInitializingCall] = useState<boolean>(false);
     const [isRingingUser, setIsRingingUser] = useState<boolean>(false);
+    const userCalled = useRecoilValue(isUserBeingCalled);
     const [callAccepted, setIsCallAccepted] = useState<boolean>(false);
     const endUserID = useRecoilValue(currentFriend).id;
     
@@ -45,7 +49,6 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
         sendFrom : ""
     };
 
-    const peer = new Peer();
 
     const callUser = () => {
         if(endUserID)
@@ -53,7 +56,7 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
             socket.emit("callUser", {
                 me : user.id,
                 to :endUserID,
-                peerID : peer.id
+                //peerID : peer.id
             });
     
             callSession = {
@@ -69,7 +72,6 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
     }
 
     useEffect(() => {
-
         socket.on("CallUserSend", data => {            
            if(callSession.sendTo === data.to && callSession.sendFrom === data.me)
            {
@@ -77,14 +79,14 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
              setIsRingingUser(true);
            }
         })
-
-    }, [callSession.sendFrom, callSession.sendTo, socket])
+    }, [callSession.sendFrom, callSession.sendTo, socket, user.id])
 
     return(
         <P2PCallContext.Provider value={{
             hasInitializingCall,
             isRingingUser,
             callAccepted,
+            userCalled,
             callUser
         }}>
             {children}

@@ -1,14 +1,17 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useContext, useRef, LegacyRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { authContext } from '../utils/context/auth';
-import { FriendList } from '../utils/state';
-import { CallPromptType, IFriendRequest, IUser } from '../utils/types';
-import loadingIcon from '../asset/loading.svg';
+import { authContext } from '../../utils/context/auth';
+import { FriendList } from '../../utils/state';
+import { CallPromptType, IFriendRequest, IUser } from '../../utils/types';
+import loadingIcon from '../../asset/loading.svg';
 import Image from 'next/image';
-import styles from '../styles/call.module.css';
-import P2PCallContextProvider, { P2PCallContext } from '../utils/context/P2PCall';
+import { AiFillCaretUp } from 'react-icons/ai';
+import P2PCallContextProvider, {
+  P2PCallContext,
+} from '../../utils/context/P2PCall';
+import styles from './styles/index.module.css';
 
 
 const Loading_prompt: React.FC = () => {
@@ -47,53 +50,48 @@ const Loading_prompt: React.FC = () => {
   );
 };
 
-const Call_prompt: React.FC<CallPromptType> = ({EndUser,localUser}) => {
-  const {callUser} = useContext(P2PCallContext);
+const Call_prompt: React.FC<CallPromptType> = ({ EndUser, localUser }) => {
+  const { callUser } = useContext(P2PCallContext);
 
   useEffect(() => {
     console.log(callUser());
-  }, [callUser])
-  return (
-      <div>
-
-      </div>
-  );
+  }, [callUser]);
+  return <div></div>;
 };
 
-const DMCallPage: NextPage = () => {
+const DMCallWidget: React.FC = () => {
   const friends = useRecoilValue(FriendList);
   const { loaded, user } = useContext(authContext);
   const [friend, setFriend] = useState<IUser>();
   const [promptLoading, setPromptloading] = useState(true);
+  const [showPrompt, setShowPrompt] = useState(false);
   const router = useRouter();
+  const { isRingingUser, userCalled } = useContext(P2PCallContext);
+
   useEffect(() => {
     setTimeout(() => {
       setPromptloading(false);
       const reciever_id = router.query.r;
-      const friend = friends.find((f) => f.receiver?.id === reciever_id)?.receiver;
+      const friend = friends.find(
+        (f) => f.receiver?.id === reciever_id
+      )?.receiver;
       setFriend(friend as IUser);
     }, 2000);
   }, [friends, router.query.r]);
 
-  if (!loaded) {
-    return (
-      <div>
-        <h1>Initializing</h1>
+  return (
+    <div hidden={!isRingingUser || !userCalled}>
+      <div className={styles.popUp} hidden={!showPrompt}>
+          
       </div>
-    );
-  } else {
-    return (
-      <>
-        {promptLoading ? (
-          <Loading_prompt />
-        ) : (
-            <div>
-                <Call_prompt localUser={user} EndUser={friend as IUser}/>
-            </div>
-        )}
-      </>
-    );
-  }
+      <div className={styles.container}>
+        <div></div>
+        <div>
+          <AiFillCaretUp color="white" className={styles.caretIcon} onClick={() => setShowPrompt(!showPrompt)}/>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default DMCallPage;
+export default DMCallWidget;

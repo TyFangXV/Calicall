@@ -23,4 +23,6 @@
 
 * Connected the Socket with the call prompt 
 
+# 0.1.9v
 
+* finished up with the call prompt and cleaned up the code for websockets
