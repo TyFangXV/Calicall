@@ -77,7 +77,7 @@ authRouter.get("/cb", async(req, res) => {
   if(token)
   {
     const userData = await discordAuth.getUserData(token.access_token as string, req.query.state as string);
-    res.status(userData ? 200 : 400).redirect(userData ? `http://localhost:3000?v=${encrypt(JSON.stringify(userData))}` : "/");
+    res.status(userData ? 200 : 400).redirect(userData ? `http://localhost:3000?v=${encrypt(JSON.stringify(userData))}` : "http://localhost:3000/msg=authenticate");
   } 
 
   if(!token)
