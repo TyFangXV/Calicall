@@ -12,10 +12,10 @@ const Accept_Tab:React.FC<IFriendRequest> = (friend) => {
         <div key={uuid.v4()} className={styles.frq_card}>
         <p className={styles.friendName}>@{friend.receiver?.name}</p>
             <div className={styles.Inputs}>
-            <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
+            <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)} disabled={typeof friend.receiver === "undefined"}>
                     <HiStatusOnline/>
                 </button>
-                <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)}>
+                <button className={styles.btn} style={{backgroundColor : "grey"}} onClick={() => router.push(`/app/me/${friend.receiver?.id}`)} disabled={typeof friend.receiver === "undefined"}>
                     <AiOutlineMessage/>
                 </button>
             </div>

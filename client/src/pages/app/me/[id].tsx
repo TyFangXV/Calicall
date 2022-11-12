@@ -15,13 +15,22 @@ import { useAlert } from '../../../components/alert';
 import { useSetRecoilState } from 'recoil';
 import { currentFriend } from '../../../utils/state';
 import P2PCallContextProvider from '../../../utils/context/P2PCall';
+
+interface MessageSet {
+  author : string;
+  messages:IClientMessage[]
+}
+
 const Chat: NextPage = () => {
   const router = useRouter();
   const setCurrentFriend = useSetRecoilState(currentFriend);
   const id = router.query.id as string;
   const { friends } = useContext(authContext);
   const [friend, setFriend] = React.useState<IUser>();
-  const [messages, setMessages] = React.useState<IClientMessage[]>([]);
+  const [messages, setMessages] = React.useState<MessageSet>({
+    author: "",
+    messages : []
+  });
   const [error, setError] = React.useState<string>('');
   const {sendMessage, socket} = useContext(SocketContext);
   const {user, token} = useContext(authContext);
@@ -29,29 +38,24 @@ const Chat: NextPage = () => {
 
 
   const alert = useAlert().newAlert;
-  let hasFetchedOldMessages = false;
 
-  const setHasFetchedOldMessages = () => hasFetchedOldMessages = true;
 
   useEffect(() => {
-    if (id) {
-      const friend = friends.find((friend) => friend.receiver?.id === id);
-      if(friend) 
-      {
-        console.log(friend.receiver);
-        
-        setFriend(friend.receiver);
-        setCurrentFriend(friend.receiver as IUser);
-      }else{
-        router.push('/app/me');
-      }
-    }
-  }, [friends, id, router, setCurrentFriend]);
-
-  useEffect(() => {
-    if(!hasFetchedOldMessages)
+    const friend = friends.find((friend) => friend.receiver?.id === id);
+    if(friend) 
     {
-      (async() => {  
+      console.log(friend.receiver);
+      
+      setMessages({
+        author : friend.receiver?.id as string,
+        messages: []
+      })
+      setFriend(friend.receiver);
+      setCurrentFriend(friend.receiver as IUser);
+    }else{
+      router.push('/app/me');
+    }
+      (async() => { 
         try {
           const {data:msg} = await axios.post('/api/message/get', {
             me: user.id,
@@ -62,14 +66,19 @@ const Chat: NextPage = () => {
               "Authorization" : "Bearer " + `${token.token}.${user.id}`
           }
           })   
+
+
           
           //check if the message is already stored in the state
-          if(msg.length > 0)
+          if(messages.author !== id)
           {
-            const newMessages = msg.filter((message:IClientMessage) => !messages.find((m) => m.id === message.id));
-            setMessages([...messages, ...newMessages]);
+            setMessages({
+              author : id,
+              messages : msg
+            })
+          }else{
+            setMessages({...messages, messages : msg})
           }
-          setHasFetchedOldMessages();
         } catch (error) {
           alert(
             "Cannot fetch old messages",
@@ -78,22 +87,20 @@ const Chat: NextPage = () => {
             "ERROR"
           )
           setError("Could not fetch old messages...Please try again later");
-          setHasFetchedOldMessages();
         }
 
       })()      
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user.id])
 
 
   useEffect(() => {
     socket.on("DMRecieve", (m:IClientMessage) => {
-      setMessages([...messages, m]);
+      setMessages({...messages, messages : [...messages.messages, m]})
     })
 
     socket.on("DMSend",(m:IClientMessage) => {
-      setMessages([...messages, m]);
+      setMessages({...messages, messages : [...messages.messages, m]})
     })
 
   }, [messages, socket])
@@ -116,7 +123,7 @@ const Chat: NextPage = () => {
         </div>
         {
           error === '' ? (
-              <ChatInterface Messages={messages} Friend={friend as IUser}/>
+              <ChatInterface Messages={messages.messages} Friend={friend as IUser}/>
             ) : (
               <div>{error}</div>
             )

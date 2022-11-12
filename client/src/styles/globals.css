@@ -18,6 +18,10 @@ body {
   --secondary-color-light : #4b4c4f;
   --secondary-color: #151619;
   --secondary-color-hover: #1c1d21;
+
+
+  --reciever-color: #00B9FF;
+  --sender-color:#00E0FF;
   
 }
 

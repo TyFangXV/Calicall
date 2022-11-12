@@ -3,6 +3,8 @@
     overflow: hidden;
     overflow-y: scroll;
     height: 80vh;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -18,11 +20,7 @@
     background-color: var(--secondary-color-light);
   }
 
-.messageContainer{
-    width: 80vw;
-    display: flex;
-    flex-direction: column;
-}
+
 
 
 .SBubble{
@@ -37,9 +35,24 @@
     padding: 0;
 }
 
-.SenderBubble{
+.FriendBubble{
+    width: 10vw;
     padding: 10px 20px 10px 20px;
-    background-color: var(--primary-color-mid);
+    background-color: var(--sender-color);
+    display: flex;
+    flex-direction: row;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 10px;
+}
+
+.SenderBubble{
+    margin-bottom: 2%;
+    width: 10vw;
+    padding: 10px 20px 10px 20px;
+    background-color: var(--reciever-color);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -61,23 +74,19 @@
 
 
 .FBubble{
-    margin: 2% 2% 1% 0%;
     float: right;
+    margin-bottom: 2%;
 }
 
-.FriendBubble{
-    padding: 10px 20px 10px 20px;
-    background-color: var(--secondary-color-light);
-    display: flex;
-    flex-direction: row;
-box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    border-radius: 10px;
-}
 
 .text{
     margin: 0;
     padding: 0;
+}
+
+.UserMessageProfilebadge{
+    max-width: 25px;
+    max-height: 25px;
+    border-radius: 50%;
+
 }
