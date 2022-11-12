@@ -5,8 +5,8 @@ import Circle from "./circle";
 import { useRouter } from "next/router";
 import { SocketContext } from "../../utils/context/socketContext";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { DMcallLogger, UnSeemMessage } from "../../utils/state";
 import { useAlert } from "../alert";
+import { DMcallLogger, UnSeemMessage } from "../../utils/state";
 import { authContext } from "../../utils/context/auth";
 import { ICallUser, IUser } from "../../utils/types";
 
@@ -14,9 +14,6 @@ const SideBar:React.FC = () => {
   const router = useRouter();
   const {socket} = useContext(SocketContext);
   const [Notif, setNotif] = useRecoilState(UnSeemMessage);
-  const {friends} = useContext(authContext)
-  const [dmCallLogger, setDMcallLogger] = useRecoilState(DMcallLogger);
-  const resetDmCallerLog = useResetRecoilState(DMcallLogger);
   const {newAlert} = useAlert();
 
   const handleClick = () => {
@@ -30,36 +27,7 @@ const SideBar:React.FC = () => {
 
 
   useEffect(() => {
-    socket.on("userSystemAlertRecieve", (data:any) => {    
-      if(data.message.type === "UNSEEN_MESSAGE_DM")
-      {
-        console.log(data.message.message);
-        
-        newAlert(
-        `New message from @${friends.find(f => f.receiver?.id === data.message.message.UserID)?.receiver?.name}`, 
-        () => router.push(`/app/me/${data.message.message.UserID}`),
-        "INFO"
-        );
-      }
-    })
 
-    socket.on("callFromFriend", (data:ICallUser) => {
-      if(!dmCallLogger.isCalling)
-      {
-        setDMcallLogger({
-          user : friends.find(f => data.me === f.senderId || data.me === f.receiverId)?.receiver as IUser,
-          isCalling : true,
-          isLocalUserCalling : false,
-          callAccepted : false
-        })
-
-        newAlert(`Call from ${friends.find(f => data.me === f.senderId || data.me === f.receiverId)?.receiver?.name}`, () =>  router.push(`/app/me/${data.me}`) , "RINGTONE")
-                
-        setTimeout(() => {
-          resetDmCallerLog()
-        }, 15000)        
-      }
-  })
 
   }, [newAlert, socket])
 

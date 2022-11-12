@@ -23,9 +23,10 @@ interface IuserAlertMessage {
 export const useAlert = () => {
   const [userAlert, setUserAlert] = useRecoilState(UserAlertAtom);
 
-  const newAlert = (message: string, onClick?: () => void, type?:"INFO" | "WARNING" | "ERROR" | "RINGTONE") => {
+  const newAlert = (message: string,route:string, onClick?: () => void,type?:"INFO" | "WARNING" | "ERROR" | "RINGTONE",) => {
     setUserAlert({
       id: uuid.v4(),
+      route : window.location.pathname,
       message,
       type : type ? type : "INFO",
       onclick: onClick,

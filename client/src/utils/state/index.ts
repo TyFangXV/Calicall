@@ -11,8 +11,17 @@ interface IuserAlertMessage {
     type : "INFO" | "WARNING" | "ERROR" | "RINGTONE"
     id: string;
     message: string;
+    route: string;
     onclick?: () => void;
   }
+
+
+      
+  interface callSession {
+    sendTo:String;
+    sendFrom:string;
+}
+
 
 
 interface IDMcallLogger {
@@ -27,6 +36,7 @@ export const UnSeemMessage = atom<IUnseemMessagesDM[]>({
     default: []
 })
 
+
 export const chatWindowScrolled = atom<boolean>({
     key: "chatWindowScrolled",
     default: false
@@ -37,6 +47,7 @@ export const UserAlertAtom = atom<IuserAlertMessage>({
     default: {
         message: "",
         type: "INFO",
+        route : "",
         id : "",
         onclick : () => {},
     }
@@ -72,4 +83,12 @@ export const currentFriend = atom<IUser>({
 export const userCalled = atom<boolean>({
  key : "userCalled",
  default: false
+})
+
+export const callSessionAtom = atom<callSession>({
+key : 'callSesiion',
+default : {
+    sendTo : "",
+    sendFrom : ""
+}
 })

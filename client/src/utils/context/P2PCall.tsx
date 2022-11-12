@@ -2,8 +2,8 @@ import { createContext, FC, useContext, useEffect, useState } from "react";
 import Peer from "peerjs";
 import {SocketContext} from './socketContext'
 import { authContext } from "./auth";
-import { useRecoilValue } from "recoil";
-import { currentFriend, userCalled as isUserBeingCalled } from "../state";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { callSessionAtom, currentFriend, userCalled as isUserBeingCalled } from "../state";
 import { ICallUser } from "../types";
 
 interface Props{
@@ -38,16 +38,7 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
     const userCalled = useRecoilValue(isUserBeingCalled);
     const [callAccepted, setIsCallAccepted] = useState<boolean>(false);
     const endUserID = useRecoilValue(currentFriend).id;
-    
-    interface callSession {
-        sendTo:String;
-        sendFrom:string;
-    }
-
-    var callSession:callSession = {
-        sendTo : "",
-        sendFrom : ""
-    };
+    const [callSession, setCallSession] = useRecoilState(callSessionAtom);
 
 
     const callUser = () => {
@@ -59,10 +50,10 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
                 //peerID : peer.id
             });
     
-            callSession = {
+             setCallSession({
                 sendTo: endUserID,
                 sendFrom: user.id
-            }
+            })
             return true;
         }else{
             console.log("Failed to get id");
@@ -73,13 +64,15 @@ const P2PCallContextProvider:FC<Props> = ({children}) => {
 
     useEffect(() => {
         socket.on("CallUserSend", data => {            
-           if(callSession.sendTo === data.to && callSession.sendFrom === data.me)
-           {
+            if(callSession.sendTo === data.to && callSession.sendFrom === data.me)
+            {
+                console.log(callSession);
+                
              setIsInitializingCall(true);
              setIsRingingUser(true);
            }
         })
-    }, [callSession.sendFrom, callSession.sendTo, socket, user.id])
+    }, [callSession.sendFrom, callSession.sendTo, user.id])
 
     return(
         <P2PCallContext.Provider value={{

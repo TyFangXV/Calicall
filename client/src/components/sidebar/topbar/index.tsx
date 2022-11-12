@@ -5,7 +5,7 @@ import styles from './style.module.css';
 import { P2PCallContext } from "../../../utils/context/P2PCall";
 
 const TopBar:React.FC<{User:IUser}> = ({User}) => {
-    const {callUser} = useContext(P2PCallContext);
+    //const {callUser} = useContext(P2PCallContext);
 
     return (
         <div>
@@ -13,7 +13,7 @@ const TopBar:React.FC<{User:IUser}> = ({User}) => {
                 <h1 className={styles.username}>@{User.name}</h1>
                 <div className={styles.btn}>
                     <span title="Call User" className={styles.title}>
-                        <MdCall className={styles.callBtn} onClick={() => callUser()} />
+                        <MdCall className={styles.callBtn}/>
                     </span>
                 </div>
             </div>

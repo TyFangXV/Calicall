@@ -80,7 +80,7 @@ const DMCallWidget: React.FC = () => {
   }, [friends, router.query.r]);
 
   return (
-    <div hidden={!isRingingUser || !userCalled}>
+    <div hidden={!isRingingUser}>
       <div className={styles.popUp} hidden={!showPrompt}>
           
       </div>

@@ -2,7 +2,6 @@ import { useContext, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import AlertContainer, { useAlert } from '../../components/alert';
 import Alert from '../../components/alert';
-import AppBar from '../../components/appbar';
 import DMCallWidget from '../../components/DMCall';
 import SideBar from '../../components/sidebar';
 import { authContext } from '../../utils/context/auth';
@@ -50,19 +49,11 @@ const Home = ({ Component, pageProps }: Props) => {
   return (
     <StateUpdaterProvider>
       <AlertContainer AlertMessage={userAlert}>
-        <div>
-          <div>
             <DMCallWidget />
-          </div>
-          <div>
             <div style={{ position: 'absolute', left: '0', top: '0' }}>
               <SideBar />
             </div>
-          </div>
-          <div>
             <Component {...pageProps} />
-          </div>
-        </div>
       </AlertContainer>
     </StateUpdaterProvider>
   );

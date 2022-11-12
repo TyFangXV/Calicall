@@ -73,7 +73,8 @@ const Chat: NextPage = () => {
         } catch (error) {
           alert(
             "Cannot fetch old messages",
-            undefined,
+            window.location.pathname,
+            () => null,
             "ERROR"
           )
           setError("Could not fetch old messages...Please try again later");
