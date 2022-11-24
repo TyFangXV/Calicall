@@ -7,6 +7,7 @@ import { authContext } from './auth';
 import { useAlert } from '../../components/alert';
 import { ICallUser, IUser } from '../types';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ const StateUpdaterProvider: React.FC<Props> = ({ children }) => {
   const setIsUserCalled = useSetRecoilState(userCalled);
   const resetDmCallerLog = useResetRecoilState(DMcallLogger);
   const [dmCallLogger, setDMcallLogger] = useRecoilState(DMcallLogger);
-
+  const [authToken, setAuthToken] = useState({token : "", id : ""})
   const { newAlert } = useAlert();
   const router = useRouter();
 
@@ -29,9 +30,17 @@ const StateUpdaterProvider: React.FC<Props> = ({ children }) => {
   const { friends } = useContext(authContext);
 
   useEffect(() => {
+    if(token && user)
+    {
+      setAuthToken({token : token.token, id : user.id})
+      
+    }
+
     socket.on('userSystemAlert', (data: any) => {
       if (data.message.type === 'FRIEND_REQUEST_UI_UPDATE') {
-        getFriends()
+        console.log("frend");
+        
+        getFriends(authToken.token, authToken.id)
           .then((res: any[]) => {
             setFriendRequest([...res]);
           })
@@ -82,12 +91,12 @@ const StateUpdaterProvider: React.FC<Props> = ({ children }) => {
     });
   }, [user, socket]);
 
-  const getFriends = async () => {
+  const getFriends = async (token:string, id:string) => {
     try {
-      const { data } = await axios.get(`/api/friend/me?me=${user.id}`, {
+      const { data } = await axios.get(`/api/friend/me?me=${id}`, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + `${token.token}.${user.id}`,
+          Authorization: 'Bearer ' + `${token}.${id}`,
         },
       });
 
