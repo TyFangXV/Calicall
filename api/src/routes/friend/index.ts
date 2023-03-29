@@ -122,7 +122,7 @@ router.post("/getRequest", async(req,res) => {
 
             res.status(200).send(requests);
         } catch (error) {
-            res.status(400).send(error);
+            res.status(400).send("Error has occured");
         }
     }else{
         res.status(400).send("Missing fields");

@@ -27,7 +27,7 @@ router.post("/get", async(req, res) => {
 
             res.status(200).send(messages)
         } catch (error) {
-            res.status(500).send(error)
+            res.status(500).send("Error has occured")
         }
     }
 

@@ -31,7 +31,7 @@ const SideMenuBar: React.FC = () => {
   const { friends } = useContext(authContext);  
   const router = useRouter();
 
-  friends.filter(f => f.accepted === true);
+  friends.filter(f => f.status === 'ACCEPTED');
   return (
     <div className={styles.container}>
       <div className={styles.friendBtn} onClick={() => router.push("/app/me")}>

@@ -21,7 +21,7 @@ const Friend:React.FC = () => {
 
 
     const sendFriendRequest = async() => {
-        if(friendRef.current?.value)
+        if(friendRef.current?.value && token.token && user)
         {
             try {
             const {data} =  await axios.post(`/api/friend/invite`, {
